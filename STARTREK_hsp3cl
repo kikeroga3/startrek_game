@@ -42,14 +42,16 @@
 	d=30-d :i=h*100/d*10 :mes ""+H+" KLINGONS IN "+d+" STARDATES. ("+i+")"
 	j=100*(c=0)-5*c:mes ""+c+" CASUALTIES INCURRED. ("+j+")"
 	mes "YOUR SCORE:"+(i+j):goto *110
+*95
+	if d<0 :mes "IT'S TOO LATE, THE FEDERATION HAS BEEN CONQUERED.":goto *110
+	if e>=0 :goto *captain
+	mes "ENTERPRISE DESTROYED"
+	if (h-k)>9 :mes "BUT YOU WERE A GOOD MAN"
 
-*95 IF D<0 THEN PRINT "IT'S TOO LATE, THE FEDERATION HAS BEEN CONQUERED.":GOTO 110
-IF E>=0 THEN goto *captain
-PRINT "ENTERPRISE DESTROYED":IF H-K>9 THEN PRINT "BUT YOU WERE A GOOD MAN"
-
-*110 Y=987:PRINT :INPUT "ANOTHERE GAME?  ","(Y OR N)"A
-IF A='Y' THEN goto *startrek
-PRINT "GOOD BYE.":STOP
+*110
+	y=987:mes "\nANOTHERE GAME? (Y OR N)" :input a,1,2
+	if a='Y' or a='y' :goto *startrek
+	mes "GOOD BYE." :stop
 
 ;---
 *captain
