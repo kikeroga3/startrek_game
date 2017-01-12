@@ -20,27 +20,34 @@
 	mes "THERE ARE "+b+" STARBASES."
 	gosub *cmp_rcv :c=0 :h=k
 
-40 U=RND(8):V=RND(8):X=RND(8):Y=RND(8)
-45 FOR I=71 TO 152:map(I)=0:NEXT I
-map(8*X+Y+62)=4:M=ABS(map(8*U+V-9)):N=M/100
-I=1:IF N THEN FOR J=1 TO N:GOSUB 165:map(J+134)=300:map(J+140)=S:map(J+146)=T:NEXT J
-GOSUB 175:M=M-100*N:I=2:IF M/10 THEN GOSUB 165
-M=M-M/10*10:I=3:IF M THEN FOR J=1 TO M:GOSUB 165:NEXT J
+*40
+	u=rnd(8) :v=rnd(8) :x=rnd(8) :y=rnd(8)
+*45
+	repeat 82 :map(71+cnt)=0 :loop
+	map(8*x+y+62)=4 :m=abs(map(8*u+v-9)) :n=m/100
+	i=1 :if n!0 {
+		repeat n
+			gosub *165 :map(cnt+135)=300 :map(cnt+141)=s :map(cnt+147)=t
+		loop
+	}
+	gosub *175 :m=m-100*n :i=2 :if (m/10)!0 :gosub *165
+	m=m-m/10*10 :i=3 :if m!0 :repeat m :gosub *165 :loop
+*65
+	gosub *145 :gosub *325 :if k!0 :goto *95
+	mes "\n" :mes "MISSION ACCOMPLISHED."
+	if d<3 :mes "BOY, YOU BARELY MADE IT."
+	if d>5 :mes "GOOD WORK..."
+	if d>9 :mes "FANTASTIC!"
+	if d>13 :mes "UNBELIEVABLE!"
+	d=30-d :i=h*100/d*10 :mes ""+H+" KLINGONS IN "+d+" STARDATES. ("+i+")"
+	j=100*(c=0)-5*c:mes ""+c+" CASUALTIES INCURRED. ("+j+")"
+	mes "YOUR SCORE:"+(i+j):goto *110
 
-65 GOSUB 145:GOSUB 325:IF K THEN GOTO 95
-PRINT :PRINT "MISSION ACCOMPLISHED.":IF D<3 THEN PRINT "BOY, YOU BARELY MADE IT."
-IF D>5 THEN PRINT "GOOD WORK..."
-IF D>9 THEN PRINT "FANTASTIC!"
-IF D>13 THEN PRINT "UNBELIEVABLE!"
-D=30-D:I=H*100/D*10:PRINT #1,H," KLINGONS IN ",D," STARDATES. (",I,")"
-J=100*(C=0)-5*C:PRINT #1,C," CASUALTIES INCURRED. (",J,")"
-PRINT "YOUR SCORE:",I+J:GOTO 110
-
-95 IF D<0 THEN PRINT "IT'S TOO LATE, THE FEDERATION HAS BEEN CONQUERED.":GOTO 110
+*95 IF D<0 THEN PRINT "IT'S TOO LATE, THE FEDERATION HAS BEEN CONQUERED.":GOTO 110
 IF E>=0 THEN goto *captain
 PRINT "ENTERPRISE DESTROYED":IF H-K>9 THEN PRINT "BUT YOU WERE A GOOD MAN"
 
-110 Y=987:PRINT :INPUT "ANOTHERE GAME?  ","(Y OR N)"A
+*110 Y=987:PRINT :INPUT "ANOTHERE GAME?  ","(Y OR N)"A
 IF A='Y' THEN goto *startrek
 PRINT "GOOD BYE.":STOP
 
