@@ -9,4 +9,4 @@ STARTREK.BAS_Clarity.txt<br>
 
 まずは移植し易いhsp3cl版を作る予定。<br>
 STARTREK_hsp3cl　・・・移植中テキスト<br>
-startrek.hsp　・・・動作確認用ファイル<br>
+startrek.hsp　・・・動作確認用ソース<br>
