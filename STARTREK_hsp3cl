@@ -1,7 +1,7 @@
 #runtime "hsp3cl"
 ;---
 *startrek
-	Y=2999
+	y=2999
 	mes "DO YOU WANT A DIFFICULT GAME(Y OR N)? ":input a,1,2
 	mes "STARDATE 3200:  YOUR MISSION IS "
 	if a='Y' or a='y' :y=999
@@ -18,8 +18,7 @@
 
 	mes "TO DESTROY "+k+" KLINGONS IN 30 STARDATES."
 	mes "THERE ARE "+b+" STARBASES."
-	gosub *cmp_rcv :c=0 :h=k
-
+	gosub *comple_repair :c=0 :h=k
 *40
 	u=rnd(8) :v=rnd(8) :x=rnd(8) :y=rnd(8)
 *45
@@ -47,7 +46,6 @@
 	if e>=0 :goto *captain
 	mes "ENTERPRISE DESTROYED"
 	if (h-k)>9 :mes "BUT YOU WERE A GOOD MAN"
-
 *110
 	y=987:mes "\nANOTHERE GAME? (Y OR N)" :input a,1,2
 	if a='Y' or a='y' :goto *startrek
@@ -69,13 +67,13 @@
   mes "W=WARP ENGINE  **PLEASE USE ONE OF THESE COMMANDS**"
   goto *captain 
 
-145 FOR I=X-(X>1) TO X+(X<8)
+*145
+FOR I=X-(X>1) TO X+(X<8)
 	FOR J=Y-(Y>1) TO Y+(Y<8)
 		IF map(8*I+J+62)<>2 THEN NEXT J:NEXT I:O=0:RETURN
 
-IF O=0 THEN PRINT 'SULU: "CAPTAIN, WE ARE DOCKED AT STARBASE." '
-
-*cmp_rcv
+	if o=0 :mes "SULU: CAPTAIN, WE ARE DOCKED AT STARBASE."
+*comple_repair
 	e=4000 :f=10 :o=1
 	repeat 7 :map(64+cnt)=0:loop
 	return
