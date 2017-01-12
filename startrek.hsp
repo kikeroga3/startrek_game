@@ -1,0 +1,128 @@
+#runtime "hsp3cl"
+;---
+*startrek
+	Y=2999
+	mes "DO YOU WANT A DIFFICULT GAME(Y OR N)? ":input a,1,2
+	mes "STARDATE 3200:  YOUR MISSION IS "
+	if a='Y' or a='y' :y=999
+
+	repeat
+		k=0 :b=0 :d=30
+		repeat 64
+			j=(rnd(99)<5) :b=b+j
+			m=rnd(y) :m=(m<209)+(m<99)+(m<49)+(m<24)+(m<9)+(m<2) :k=k+m
+			map(cnt)=-100*m-10*j-rnd(8)
+		loop
+		if b>1 and k>3 :break
+	loop
+
+	mes "TO DESTROY "+k+" KLINGONS IN 30 STARDATES."
+	mes "THERE ARE "+b+" STARBASES."
+	gosub *comple_repair :c=0 :h=k
+
+*40
+	u=rnd(8) :v=rnd(8) :x=rnd(8) :y=rnd(8)
+*45
+	repeat 82 :map(71+cnt)=0 :loop
+	map(8*x+y+62)=4 :m=abs(map(8*u+v-9)) :n=m/100
+	i=1 :if n!0 {
+		repeat n
+			gosub *165 :map(cnt+135)=300 :map(cnt+141)=s :map(cnt+147)=t
+		loop
+	}
+	gosub *175 :m=m-100*n :i=2 :if (m/10)!0 :gosub *165
+	m=m-m/10*10 :i=3 :if m!0 :repeat m :gosub *165 :loop
+*65
+	gosub *145 :gosub *325 :if k!0 :goto *95
+	mes "\n" :mes "MISSION ACCOMPLISHED."
+	if d<3 :mes "BOY, YOU BARELY MADE IT."
+	if d>5 :mes "GOOD WORK..."
+	if d>9 :mes "FANTASTIC!"
+	if d>13 :mes "UNBELIEVABLE!"
+	d=30-d :i=h*100/d*10 :mes ""+H+" KLINGONS IN "+d+" STARDATES. ("+i+")"
+	j=100*(c=0)-5*c:mes ""+c+" CASUALTIES INCURRED. ("+j+")"
+	mes "YOUR SCORE:"+(i+j):goto *110
+*95
+	if d<0 :mes "IT'S TOO LATE, THE FEDERATION HAS BEEN CONQUERED.":goto *110
+	if e>=0 :goto *captain
+	mes "ENTERPRISE DESTROYED"
+	if (h-k)>9 :mes "BUT YOU WERE A GOOD MAN"
+*110
+	y=987:mes "\nANOTHERE GAME? (Y OR N)" :input a,1,2
+	if a='Y' or a='y' :goto *startrek
+	mes "GOOD BYE." :stop
+
+;---
+*captain
+	mes "CAPTAIN? " :input a,1,2
+	if a='R' or a='r' :goto *report
+	if a='S' or a='s' :goto *sr_sensor
+	if a='L' or a='l' :goto *lr_sensor
+	if a='G' or a='g' :goto *galaxy_map
+	if a='P' or a='p' :goto *phaser
+	if a='T' or a='t' :goto *torpedo
+	if a='W' or a='w' :goto *warp
+
+  mes "R=REPORT       S=SR. SENSOR   L=LR. SENSOR"
+  mes "G=GALAXY MAP   P=PHASER       T=TORPEDO"
+  mes "W=WARP ENGINE  **PLEASE USE ONE OF THESE COMMANDS**"
+  goto *captain
+
+*145
+
+*comple_repair
+	e=4000 :f=10 :o=1
+	repeat 7 :map(64+cnt)=0:loop
+	return
+
+*165
+
+*175
+
+;---
+*galaxy_map
+	goto *captain
+
+;---
+*lr_sensor
+	goto *captain
+
+;---
+*sr_sensor
+	goto *captain
+
+;---
+*phaser
+	goto *captain
+
+*295
+
+*305
+
+*325
+	return
+
+*350
+
+*360
+
+;---
+*damaged
+
+;---
+*report
+	goto *captain
+
+;---
+*warp
+	goto *65
+
+;---
+*torpedo
+	goto *65
+
+
+
+
+
+
