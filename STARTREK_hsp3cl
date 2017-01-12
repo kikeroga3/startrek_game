@@ -62,17 +62,26 @@
 	if a='T' or a='t' :goto *torpedo
 	if a='W' or a='w' :goto *warp
 
-  mes "R=REPORT       S=SR. SENSOR   L=LR. SENSOR"
-  mes "G=GALAXY MAP   P=PHASER       T=TORPEDO"
-  mes "W=WARP ENGINE  **PLEASE USE ONE OF THESE COMMANDS**"
-  goto *captain 
+	mes "R=REPORT       S=SR. SENSOR   L=LR. SENSOR"
+	mes "G=GALAXY MAP   P=PHASER       T=TORPEDO"
+	mes "W=WARP ENGINE  **PLEASE USE ONE OF THESE COMMANDS**"
+	goto *captain 
 
 *145
-FOR I=X-(X>1) TO X+(X<8)
-	FOR J=Y-(Y>1) TO Y+(Y<8)
-		IF map(8*I+J+62)<>2 THEN NEXT J:NEXT I:O=0:RETURN
+	i=x-(x>1)
+	repeat ((x+(x<8))-i+1) :q=cnt
+		j=y-(y>1)
+		repeat ((y+(y<8))-j+1)
+			if map(8*(i+q)+(j+cnt)+62)=2 :o=0 :break
+		loop
+	loop
 
-	if o=0 :mes "SULU: CAPTAIN, WE ARE DOCKED AT STARBASE."
+	if o=0 {
+		mes "SULU: CAPTAIN, WE ARE DOCKED AT STARBASE."
+	} else {
+		return
+	}
+
 *repair_ok
 	e=4000 :f=10 :o=1
 	repeat 7 :map(64+cnt)=0:loop
@@ -279,4 +288,3 @@ S=(I+45)/90:I=I-S*90:R=(45+I*I)/110+45:GOTO 625+5*(S<4)*S
 630 S=I:T=45:RETURN
 635 S=45:T=-I:RETURN
 640 S=-I:T=-45:RETURN
-
