@@ -18,7 +18,7 @@
 
 	mes "TO DESTROY "+k+" KLINGONS IN 30 STARDATES."
 	mes "THERE ARE "+b+" STARBASES."
-	gosub *comple_repair :c=0 :h=k
+	gosub *repair_ok :c=0 :h=k
 *40
 	u=rnd(8) :v=rnd(8) :x=rnd(8) :y=rnd(8)
 *45
@@ -73,7 +73,7 @@ FOR I=X-(X>1) TO X+(X<8)
 		IF map(8*I+J+62)<>2 THEN NEXT J:NEXT I:O=0:RETURN
 
 	if o=0 :mes "SULU: CAPTAIN, WE ARE DOCKED AT STARBASE."
-*comple_repair
+*repair_ok
 	e=4000 :f=10 :o=1
 	repeat 7 :map(64+cnt)=0:loop
 	return
