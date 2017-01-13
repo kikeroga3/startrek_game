@@ -50,7 +50,6 @@
 	y=987:mes "\nANOTHERE GAME? (Y OR N)" :input a,1,2
 	if a='Y' or a='y' :goto *startrek
 	mes "GOOD BYE." :stop
-
 ;---
 *captain
 	mes "CAPTAIN? " :input a,1,2
@@ -66,7 +65,6 @@
 	mes "G=GALAXY MAP   P=PHASER       T=TORPEDO"
 	mes "W=WARP ENGINE  **PLEASE USE ONE OF THESE COMMANDS**"
 	goto *captain 
-
 *145
 	i=x-(x>1)
 	repeat ((x+(x<8))-i+1) :q=cnt
@@ -86,12 +84,12 @@
 	e=4000 :f=10 :o=1
 	repeat 7 :map(64+cnt)=0:loop
 	return
-
-165 S=RND(8):T=RND(8):A=8*S+T+62:IF map(A) THEN GOTO 165
-map(A)=I:RETURN
-
-175 PRINT "ENTERPRISE IN Q-",#1,U,V," S-",X,Y:RETURN
-
+*165
+	s=rnd(8) :t=rnd(8) :a=8*s+t+62 :if map(a)!0 :goto *165
+	map(a)=i :return
+*175
+	mes "ENTERPRISE IN Q-"+u+","+v+" S-"+x+","+y
+	return
 ;---
 *galaxy_map
 180 GOSUB 175:J=2:GOSUB 375:IF I THEN goto *captain
@@ -162,10 +160,11 @@ IF map(M)>0 THEN PRINT " **DAMAGED**":RETURN
 map(M)=0:I=8*U+V-9:J=map(I)/ABS(map(I)):map(I)=map(I)-100*J:K=K-1
 I=8*map(M+6)+map(M+12)+62:map(I)=0:N=N-1:PRINT " ***DESTROYED***":RETURN
 
-325 IF N=0 THEN RETURN
-PRINT "KLINGON ATTACK"
-IF O THEN PRINT "STARBASE PROTECTS ENTERPRISE":RETURN
-T=0
+*325
+	if n=0 :return
+	mes "KLINGON ATTACK"
+	if o!0 :mes "STARBASE PROTECTS ENTERPRISE" :return
+	t=0
 FOR M=135 TO 140
 	IF map(M)=0 THEN GOTO 350
 	A=(map(M)+RND(map(M)))/2:GOSUB 295:T=T+S:I=map(M+6):J=map(M+12)
