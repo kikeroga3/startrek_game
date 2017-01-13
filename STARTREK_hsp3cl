@@ -92,20 +92,21 @@
 	return
 ;---
 *galaxy_map
-180 GOSUB 175:J=2:GOSUB 375:IF I THEN goto *captain
-PRINT " OF GALAXY MAP"
-FOR I=0 TO 7
-	PRINT :PRINT #1,I+1,":",
-	FOR J=0 TO 7:M=map(8*I+J) 
-		PRINT #4,(M>0)*M,
-	NEXT J
-	PRINT
-NEXT I
-PRINT "  ",:FOR I=0 TO 7:PRINT "  ..",:NEXT I:PRINT
-PRINT "  ",:FOR I=1 TO 8:PRINT #4,I,:NEXT I:PRINT :PRINT
-goto *captain
-
-200 GOSUB 175:J=3:GOSUB 375:IF I THEN goto *captain
+	gosub *175 :j=2 :gosub *damaged :if i!0 :goto *captain
+	mes " OF GALAXY MAP"
+	repeat 8
+		i=cnt :mes "\n"+(i+1)+":"
+		repeat 8
+			m=map(8*i+cnt) :mes ""+((m>0)*m)
+		loop
+		mes "\n"
+	loop
+	mes "  " :repeat 8 :mes "  .." :loop :mes "\n"
+	mes "  " :repeat 8 :mes ""+(i+1) :loop :mes "\n\n"
+	goto *captain
+;---
+*lr_sensor
+GOSUB 175:J=3:gosub *damaged:IF I THEN goto *captain
 PRINT
 FOR I=U-1 TO U+1:
 	FOR J=V-1 TO V+1
@@ -119,7 +120,7 @@ goto *captain
 
 ;---
 *sr_sensor
-220 GOSUB 175:J=1:GOSUB 375:IF I THEN goto *captain
+GOSUB 175:J=1:gosub *damaged:IF I THEN goto *captain
 M=8*U+V-9:map(M)=ABS(map(M))
 PRINT
 FOR I=1 TO 8
@@ -139,7 +140,7 @@ PRINT :goto *captain
 
 ;---
 *phaser
-260 J=4:GOSUB 375:IF I THEN goto *captain
+J=4:gosub *damaged:IF I THEN goto *captain
 INPUT " ENERGIZED. ","UNITS TO FIRE"A
 IF A<1 THEN goto *captain
 IF A>E THEN PRINT 'SPOCK: "WE HAVE ONLY ',#1,E,' UNITS."':goto *captain
@@ -183,7 +184,6 @@ I=8*map(M+6)+map(M+12)+62:map(I)=0:N=N-1:PRINT " ***DESTROYED***":RETURN
 	mes "MC COY: SICKBAY TO BRIDGE, WE SUFFERED "+i+" CASUALTIES."
 ;---
 *damaged
-*375
 	i=map(j+63)
 	if j=1 :mes "SHORT RANGE SENSOR,"
 	if j=2 :mes "COMPUTER DISPLAY,"
@@ -198,7 +198,7 @@ I=8*map(M+6)+map(M+12)+62:map(I)=0:N=N-1:PRINT " ***DESTROYED***":RETURN
 
 ;---
 *report
-420 PRINT "STATUS REPORT:"
+PRINT "STATUS REPORT:"
 PRINT "STARDATE",#10,3230-D
 PRINT "TIME LEFT",#7,D
 PRINT "CONDITION     ",
@@ -212,13 +212,13 @@ PRINT "TORPEDOES",#7,F
 PRINT "KLINGONS LEFT",#3,K
 PRINT "STARBASES",#6,B
 FOR J=1 TO 7
-	IF map(J+63) THEN GOSUB 375
+	IF map(J+63) THEN gosub *damaged
 NEXT J
 goto *captain
 
 ;---
 *warp
-465 J=5:GOSUB 375:IF I=0 THEN PRINT
+J=5:gosub *damaged:IF I=0 THEN PRINT
 470 INPUT "SECTOR DISTANCE"W
 IF W<1 THEN goto *captain
 IF I*(W>2) THEN PRINT 'CHEKOV: "WE CAN TRY 2 AT MOST, SIR."':GOTO 470 
@@ -246,7 +246,7 @@ PRINT "ON BOARD COMPUTER TAKES OVER, AND SAVED YOUR LIFE":GOTO 40
 
 ;---
 *torpedo
-555 J=6:GOSUB 375:IF I THEN goto *captain
+J=6:gosub *damaged:IF I THEN goto *captain
 IF F=0 THEN PRINT " EMPTY":goto *captain
 PRINT " LOADED":GOSUB 615:IF R=0 THEN goto *captain
 PRINT "TORPEDO TRACK ",
@@ -290,3 +290,4 @@ S=(I+45)/90:I=I-S*90:R=(45+I*I)/110+45:GOTO 625+5*(S<4)*S
 630 S=I:T=45:RETURN
 635 S=45:T=-I:RETURN
 640 S=-I:T=-45:RETURN
+
