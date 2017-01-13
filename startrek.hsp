@@ -1,7 +1,7 @@
 #runtime "hsp3cl"
 ;---
 *startrek
-	Y=2999
+	y=2999
 	mes "DO YOU WANT A DIFFICULT GAME(Y OR N)? ":input a,1,2
 	mes "STARDATE 3200:  YOUR MISSION IS "
 	if a='Y' or a='y' :y=999
@@ -18,8 +18,7 @@
 
 	mes "TO DESTROY "+k+" KLINGONS IN 30 STARDATES."
 	mes "THERE ARE "+b+" STARBASES."
-	gosub *comple_repair :c=0 :h=k
-
+	gosub *repair_ok :c=0 :h=k
 *40
 	u=rnd(8) :v=rnd(8) :x=rnd(8) :y=rnd(8)
 *45
@@ -51,7 +50,6 @@
 	y=987:mes "\nANOTHERE GAME? (Y OR N)" :input a,1,2
 	if a='Y' or a='y' :goto *startrek
 	mes "GOOD BYE." :stop
-
 ;---
 *captain
 	mes "CAPTAIN? " :input a,1,2
@@ -63,66 +61,105 @@
 	if a='T' or a='t' :goto *torpedo
 	if a='W' or a='w' :goto *warp
 
-  mes "R=REPORT       S=SR. SENSOR   L=LR. SENSOR"
-  mes "G=GALAXY MAP   P=PHASER       T=TORPEDO"
-  mes "W=WARP ENGINE  **PLEASE USE ONE OF THESE COMMANDS**"
-  goto *captain
-
+	mes "R=REPORT       S=SR. SENSOR   L=LR. SENSOR"
+	mes "G=GALAXY MAP   P=PHASER       T=TORPEDO"
+	mes "W=WARP ENGINE  **PLEASE USE ONE OF THESE COMMANDS**"
+	goto *captain 
 *145
+	i=x-(x>1)
+	repeat ((x+(x<8))-i+1) :q=cnt
+		j=y-(y>1)
+		repeat ((y+(y<8))-j+1)
+			if map(8*(i+q)+(j+cnt)+62)=2 :o=0 :break
+		loop
+	loop
 
-*comple_repair
+	if o=0 {
+		mes "SULU: CAPTAIN, WE ARE DOCKED AT STARBASE."
+	} else {
+		return
+	}
+
+*repair_ok
 	e=4000 :f=10 :o=1
 	repeat 7 :map(64+cnt)=0:loop
 	return
-
 *165
-
+	s=rnd(8) :t=rnd(8) :a=8*s+t+62 :if map(a)!0 :goto *165
+	map(a)=i :return
 *175
-
+	mes "ENTERPRISE IN Q-"+u+","+v+" S-"+x+","+y
+	return
 ;---
 *galaxy_map
+	gosub *175 :j=2 :gosub *damaged :if i!0 :goto *captain
+	mes " OF GALAXY MAP"
+	repeat 8
+		i=cnt :mes "\n"+(i+1)+":"
+		repeat 8
+			m=map(8*i+cnt) :mes ""+((m>0)*m)
+		loop
+		mes "\n"
+	loop
+	mes "  " :repeat 8 :mes "  .." :loop :mes "\n"
+	mes "  " :repeat 8 :mes ""+(i+1) :loop :mes "\n\n"
 	goto *captain
-
 ;---
 *lr_sensor
-	goto *captain
+goto *captain
 
 ;---
 *sr_sensor
-	goto *captain
+goto *captain
 
 ;---
 *phaser
-	goto *captain
 
 *295
-
-*305
+	if a>1090 :mes "...OVERLOADED.." :j=4 :map(67)=1 :a=9 :gosub *damaged
+	i=map(m+6)-x:j=map(m+12)-y :s=a*30/(30+i*i+j*j)+1 :return
 
 *325
-	return
-
-*350
-
+	if n=0 :return
+	mes "KLINGON ATTACK"
+	if o!0 :mes "STARBASE PROTECTS ENTERPRISE" :return
+	t=0
+	repeat 6
+		m=135+cnt
+		if map(135+m)!0 {
+			a=(map(m)+rnd(map(m)))/2 :gosub *295
+			t=t+s :i=map(m+6) :j=map(m+12)
+			mes ""+s+" UNITS HIT FROM KLINGON AT S-"+i+","+j
+		}
+	loop
+	e=e-t :if e<=0 :mes "*** BANG ***" :return
+	mes ""+e+" UNITS OF ENERGY LEFT."
+	if rnd(e/4)>t :return
 *360
-
+	if map(70)=0 :map(70)=rnd(t/50+1) :j=7 :goto *damaged
+	j=rnd(6) :map(j+63)=rnd(t/99+1)+map(j+63) :i=rnd(8)+1 :c=c+i
+	mes "MC COY: SICKBAY TO BRIDGE, WE SUFFERED "+i+" CASUALTIES."
 ;---
 *damaged
+	i=map(j+63)
+	if j=1 :mes "SHORT RANGE SENSOR,"
+	if j=2 :mes "COMPUTER DISPLAY,"
+	if j=3 :mes "LONG RANGE SENSOR,"
+	if j=4 :mes "PHASER,"
+	if j=5 :mes "WARP ENGINE,"
+	if j=6 :mes "PHOTON TORPEDO TUBES,"
+	if j=7 :mes "SHIELD,"
+	IF i=0 :return
+	mes " DAMAGED, "+i+" STARDATES ESTIMATED FOR REPAIR"
+	return
 
 ;---
 *report
-	goto *captain
+goto *captain
 
 ;---
 *warp
-	goto *65
 
 ;---
 *torpedo
-	goto *65
-
-
-
-
-
 
