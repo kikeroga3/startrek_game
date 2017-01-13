@@ -151,8 +151,9 @@ FOR M=135 TO 140
 290 NEXT M
 GOTO 65
 
-295 IF A>1090 THEN PRINT "...OVERLOADED..":J=4:map(67)=1:A=9:GOSUB 375 
-I=map(M+6)-X:J=map(M+12)-Y:S=A*30/(30+I*I+J*J)+1:RETURN
+*295
+	if a>1090 :mes "...OVERLOADED.." :j=4 :map(67)=1 :a=9 :gosub *damaged
+	i=map(m+6)-x:j=map(m+12)-y :s=a*30/(30+i*i+j*j)+1 :return
 
 305 PRINT "KLINGON AT S-",#1,map(M+6),map(M+12),
 map(M)=map(M)-S 
@@ -165,33 +166,35 @@ I=8*map(M+6)+map(M+12)+62:map(I)=0:N=N-1:PRINT " ***DESTROYED***":RETURN
 	mes "KLINGON ATTACK"
 	if o!0 :mes "STARBASE PROTECTS ENTERPRISE" :return
 	t=0
-FOR M=135 TO 140
-	IF map(M)=0 THEN GOTO 350
-	A=(map(M)+RND(map(M)))/2:GOSUB 295:T=T+S:I=map(M+6):J=map(M+12)
-	PRINT #3,S," UNITS HIT FROM KLINGON AT S-",#1,I,J
-350 NEXT M
-
-E=E-T:IF E<=0 THEN PRINT "*** BANG ***":RETURN R	;Returnを解消して行番号Rへジャンプする
-PRINT #1,E," UNITS OF ENERGY LEFT."
-IF RND(E/4)>T THEN RETURN
-
-360 IF map(70)=0 THEN map(70)=RND(T/50+1):J=7:GOTO 375
-J=RND(6):map(J+63)=RND(T/99+1)+map(J+63):I=RND(8)+1:C=C+I
-PRINT 'MC COY: "SICKBAY TO BRIDGE, WE SUFFERED',#2,I,' CASUALTIES."'
-
+	repeat 6
+		m=135+cnt
+		if map(135+m)!0 {
+			a=(map(m)+rnd(map(m)))/2 :gosub *295
+			t=t+s :i=map(m+6) :j=map(m+12)
+			mes ""+s+" UNITS HIT FROM KLINGON AT S-"+i+","+j
+		}
+	loop
+	e=e-t :if e<=0 :mes "*** BANG ***" :return
+	mes ""+e+" UNITS OF ENERGY LEFT."
+	if rnd(e/4)>t :return
+*360
+	if map(70)=0 :map(70)=rnd(t/50+1) :j=7 :goto *damaged
+	j=rnd(6) :map(j+63)=rnd(t/99+1)+map(j+63) :i=rnd(8)+1 :c=c+i
+	mes "MC COY: SICKBAY TO BRIDGE, WE SUFFERED "+i+" CASUALTIES."
 ;---
 *damaged
-375 I=map(J+63)
-IF J=1 THEN PRINT "SHORT RANGE SENSOR",
-IF J=2 THEN PRINT "COMPUTER DISPLAY",
-IF J=3 THEN PRINT "LONG RANGE SENSOR",
-IF J=4 THEN PRINT "PHASER",
-IF J=5 THEN PRINT "WARP ENGINE",
-IF J=6 THEN PRINT "PHOTON TORPEDO TUBES",
-IF J=7 THEN PRINT "SHIELD",
-IF I=0 THEN RETURN
-PRINT " DAMAGED, ",#1,I," STARDATES ESTIMATED FOR REPAIR"
-RETURN
+*375
+	i=map(j+63)
+	if j=1 :mes "SHORT RANGE SENSOR,"
+	if j=2 :mes "COMPUTER DISPLAY,"
+	if j=3 :mes "LONG RANGE SENSOR,"
+	if j=4 :mes "PHASER,"
+	if j=5 :mes "WARP ENGINE,"
+	if j=6 :mes "PHOTON TORPEDO TUBES,"
+	if j=7 :mes "SHIELD,"
+	IF i=0 :return
+	mes " DAMAGED, "+i+" STARDATES ESTIMATED FOR REPAIR"
+	return
 
 ;---
 *report
