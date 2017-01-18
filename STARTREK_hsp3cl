@@ -118,52 +118,51 @@
 		mes "\n"
 	loop
 	goto *captain
-
-
-
 ;---
 *sr_sensor
-GOSUB 175:J=1:gosub *damaged:IF I THEN goto *captain
-M=8*U+V-9:map(M)=ABS(map(M))
-PRINT
-FOR I=1 TO 8
-	PRINT #1,I,
-	FOR J=1 TO 8
-		M=map(8*I+J+62):IF M=0 THEN PRINT " .",
-		IF M=1 THEN PRINT " K",
-		IF M=2 THEN PRINT " B",
-		IF M=3 THEN PRINT " *",
-		IF M=4 THEN PRINT " E",
-	NEXT J
-	PRINT
-NEXT I
-PRINT " ",
-FOR I=1 TO 8:PRINT #2,I,:NEXT I
-mes "\n" :goto *captain
+	gosub *175 :j=1 :gosub *damaged :if i!0 :goto *captain
+	m=8*u+v-9 :map(m)=abs(map(m))
+	mes "\n"
+	repeat 8 :i=1+cnt
+		mes ""+i
+		repeat 8
+			m=map(8*i+cnt+63) :if m=0 :mes " ."
+			if m=1 :mes " K"
+			if m=2 :mes " B"
+			if m=3 :mes " *"
+			if m=4 :mes " E"
+		loop
+		mes "\n"
+	loop
+	mes " "
+	repeat 8 :mes ""+i :loop
+	mes "\n" :goto *captain
 
 ;---
 *phaser
-J=4:gosub *damaged:IF I THEN goto *captain
-INPUT " ENERGIZED. ","UNITS TO FIRE"A
-IF A<1 THEN goto *captain
-IF A>E THEN PRINT 'SPOCK: "WE HAVE ONLY ',#1,E,' UNITS."':goto *captain
-E=E-A:IF N<1 THEN PRINT "PHASER FIRED AT EMPTY SPACE.":goto *65
-A=A/N
-FOR M=135 TO 140
-	IF map(M)=0 THEN GOTO 290
-	GOSUB 295:PRINT #3,S," UNITS HIT ",:GOSUB 305
-290 NEXT M
-goto *65
+	j=4 :gosub *damaged :if i!0 :goto *captain
+	mes " ENERGIZED. UNITS TO FIRE" :input a,4,2
+	if a<1 :goto *captain
+	if a>e :mes "SPOCK: WE HAVE ONLY "+e+" UNITS." :goto *captain
+	e=e-a :if n<1 :mes "PHASER FIRED AT EMPTY SPACE." :goto *65
+	a=a/n
+	repeat 6 :m=135+cnt
+		if map(m)!0 {
+			gosub *fire :mes ""+s+" UNITS HIT " :gosub *hits
+		}
+	loop
+	goto *65
 
-*295
+*fire
 	if a>1090 :mes "...OVERLOADED.." :j=4 :map(67)=1 :a=9 :gosub *damaged
 	i=map(m+6)-x:j=map(m+12)-y :s=a*30/(30+i*i+j*j)+1 :return
 
-305 PRINT "KLINGON AT S-",#1,map(M+6),map(M+12),
-map(M)=map(M)-S 
-IF map(M)>0 THEN PRINT " **DAMAGED**":RETURN
-map(M)=0:I=8*U+V-9:J=map(I)/ABS(map(I)):map(I)=map(I)-100*J:K=K-1
-I=8*map(M+6)+map(M+12)+62:map(I)=0:N=N-1:PRINT " ***DESTROYED***":RETURN
+*hits
+	mes "KLINGON AT S-"+map(m+6)+","+map(m+12)
+	map(m)=map(m)-s
+	if map(m)>0 :mes " **DAMAGED**" :return
+	map(m)=0 :i=8*u+v-9 :j=map(i)/abs(map(i)) :map(i)=map(i)-100*j :k=k-1
+	i=8*map(m+6)+map(m+12)+62 :map(i)=0 :n=n-1 :mes " ***DESTROYED***" :return
 
 *klingon_atk
 	if n=0 :return
@@ -173,7 +172,7 @@ I=8*map(M+6)+map(M+12)+62:map(I)=0:N=N-1:PRINT " ***DESTROYED***":RETURN
 	repeat 6
 		m=135+cnt
 		if map(135+m)!0 {
-			a=(map(m)+rnd(map(m)))/2 :gosub *295
+			a=(map(m)+rnd(map(m)))/2 :gosub *fire
 			t=t+s :i=map(m+6) :j=map(m+12)
 			mes ""+s+" UNITS HIT FROM KLINGON AT S-"+i+","+j
 		}
@@ -199,7 +198,6 @@ I=8*map(M+6)+map(M+12)+62:map(I)=0:N=N-1:PRINT " ***DESTROYED***":RETURN
 	IF i=0 :return
 	mes " DAMAGED, "+i+" STARDATES ESTIMATED FOR REPAIR"
 	return
-
 ;---
 *report
 	mes "STATUS REPORT:"
@@ -222,52 +220,63 @@ I=8*map(M+6)+map(M+12)+62:map(I)=0:N=N-1:PRINT " ***DESTROYED***":RETURN
 	goto *captain
 ;---
 *warp
-J=5:gosub *damaged:IF I=0 THEN PRINT
-470 INPUT "SECTOR DISTANCE"W
-IF W<1 THEN goto *captain
-IF I*(W>2) THEN PRINT 'CHEKOV: "WE CAN TRY 2 AT MOST, SIR."':GOTO 470 
-IF W>91 THEN W=91:PRINT 'SPOCK: "ARE YOU SURE, CAPTAIN?"'
-IF E<W*W/2 THEN PRINT 'SCOTTY: "SIR, WE DO NOT HAVE THE ENERGY."':goto *captain 
-GOSUB 615:IF R=0 THEN goto *captain
-D=D-1:E=E-W*W/2:map(8*X+Y+62)=0
-FOR M=64 TO 70:map(M)=(map(M)-1)*(map(M)>0):NEXT M
-P=45*X+22:G=45*Y+22:W=45*W
-FOR M=1 TO 8
-	W=W-R:IF W<-22 THEN GOTO 525
-	P=P+S:G=G+T:I=P/45:J=G/45
-	IF (I<1)+(I>8)+(J<1)+(J>8) THEN GOTO 530
-	IF map(8*I+J+62)=0 THEN X=I:Y=J:NEXT M 
+	j=5 :gosub *damaged :if i=0 :mes "\n"
+*470
+	mes "SECTOR DISTANCE" :input w,2,2
+	if w<1 :goto *captain
+	if i*(w>2) :mes "CHEKOV: WE CAN TRY 2 AT MOST, SIR." :goto *470
+	if w>91 :w=91 :mes "SPOCK: ARE YOU SURE, CAPTAIN?"
+	if e<(w*w/2) :mes "SCOTTY: SIR, WE DO NOT HAVE THE ENERGY." :goto *captain
+	gosub *course:if r=0 :goto *captain
+	d=d-1 :e=e-w*w/2 :map(8*x+y+62)=0
+	repeat 7:m=64+cnt :map(m)=(map(m)-1)*(map(m)>0) :loop
+	p=45*x+22 :g=45*y+22 :w=45*w
 
-PRINT "**EMERGENCY STOP**"
-PRINT 'SPOCK: "TO ERR IS HUMAN."
-
-525 map(8*X+Y+62)=4:GOSUB 175:goto *65 
-530 P=U*72+P/5+W/5*S/R-9:U=P/72:G=V*72+G/5+W/5*T/R-9:V=G/72 
-IF RND(9)<2 THEN PRINT "***SPACE STORM***":T=100:gosub *casualties
-IF (U>0)*(U<9)*(V>0)*(V<9) THEN X=(P+9-72*U)/9:Y=(G+9-72*V)/9:GOTO 45
-PRINT "**YOU WANDERED OUTSIDE THE GALAXY**"
-PRINT "ON BOARD COMPUTER TAKES OVER, AND SAVED YOUR LIFE":GOTO 40
-
+	q=0
+	repeat 8
+		w=w-r :if w<-22 :q=1 :break
+		p=p+s :g=g+t :i=p/45 :j=g/45
+		if (i<1)+(i>8)+(j<1)+(j>8) :q=2 :break
+		if map(8*i+j+62)=0 :x=i :y=j
+	loop
+	if q=1 :map(8*x+y+62)=4 :gosub *175 :goto *65
+	if q!2 {
+		mes "**EMERGENCY STOP**"
+		mes "SPOCK: TO ERR IS HUMAN."
+	}
+	p=u*72+p/5+w/5*s/r-9 :u=p/72 :g=v*72+g/5+w/5*t/r-9 :v=q/72
+	if rnd(9)<2 :mes "***SPACE STORM***" :t=100 :gosub *casualties
+	if (u>0)*(u<9)*(v>0)*(v<9) :x=(p+9-72*u)/9 :y=(g+9-72*v)/9 :goto *45
+	mes "**YOU WANDERED OUTSIDE THE GALAXY**"
+	mes "ON BOARD COMPUTER TAKES OVER, AND SAVED YOUR LIFE" :goto *40
 ;---
 *torpedo
-J=6:gosub *damaged:IF I THEN goto *captain
-IF F=0 THEN PRINT " EMPTY":goto *captain
-PRINT " LOADED":GOSUB 615:IF R=0 THEN goto *captain
-PRINT "TORPEDO TRACK ",
-F=F-1:P=45*X+22:G=45*Y+22
-FOR M=1 TO 8
-	P=P+S:G=G+T:I=P/45:J=G/45
-	IF (I<1)+(I>8)+(J<1)+(J>8) THEN GOTO 585
-	L=8*I+J+62:W=8*U+V-9:R=map(W)/ABS(map(W)):PRINT #1,I,J," ",
-	GOTO 585+5*map(L)
+	j=6 :gosub *damaged :if i!0 :goto *captain
+	if f=0 :mes " EMPTY" :goto *captain
+	mes " LOADED" :gosub *course :if r=0 :goto *captain
+	mes "TORPEDO TRACK "
+	f=f-1 :p=45*x+22 :g=45*y+22
 
-585 NEXT M
-PRINT "...MISSED":goto *65
+	q=0
+	repeat 8
+		p=p+s :g=g+t :i=p/45 :j=g/45
+		if (i<1)+(i>8)+(j<1)+(j>8)=0 {
+			l=8*i+j+62 :w=8*u+v-9 :r=map(w)/abs(map(w))
+			mes ""+I+","+J+" "
+			q=map(l) :if q>0 :break
+		}
+	loop
+	if q=1 :goto *590
+	if q=2 :goto *595
+	if q=3 :goto *600
+	if q=4 :goto *605
+	if q=5 :goto *610
+	mes "...MISSED":goto *65
 
 *590
 	s=rnd(99)+280
 	repeat 6 :m=135+cnt
-		if (map(m+6)=i)*(map(m+12)=j) :gosub *305
+		if (map(m+6)=i)*(map(m+12)=j) :gosub *hits
 	loop
 	goto *65
 
@@ -292,11 +301,12 @@ PRINT "...MISSED":goto *65
 	mes "IT NOVAS    ***RADIATION ALARM***" :gosub *casualties
 	goto *65
 
-615 INPUT "COURSE (0-360)"I
-IF (I>360)+(I<0) THEN R=0:RETURN
-S=(I+45)/90:I=I-S*90:R=(45+I*I)/110+45:GOTO 625+5*(S<4)*S
-625 S=-45:T=I:RETURN
-630 S=I:T=45:RETURN
-635 S=45:T=-I:RETURN
-640 S=-I:T=-45:RETURN
-
+*course
+	mes "COURSE (0-360)" :input i,3,2
+	if (i>360)+(i<0) :r=0 :return
+	s=(i+45)/90 :i=i-s*90 :r=(45+i*i)/110+45 :q=(s<4)*s
+	if q=0 :s=-45 :t=i
+	if q=1 :s=i :t=45
+	if q=2 :s=45 :t=-i
+	if q=3 :s=-i :t=-45
+	return
