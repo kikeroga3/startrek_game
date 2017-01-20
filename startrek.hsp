@@ -269,7 +269,7 @@
 	j=6 :gosub *damaged :if i!0 :goto *captain
 	if f=0 :mes " EMPTY" :goto *captain
 	mes " LOADED" :gosub *course :if r=0 :goto *captain
-	mes "TORPEDO TRACK "
+	mes "TORPEDO TRACK " :z=""
 	f=f-1 :p=45*x+22 :g=45*y+22
 
 	q=0
