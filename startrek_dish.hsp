@@ -1,23 +1,38 @@
 #include "hsp3dish.as"		;HSP3Dish
-#include "mod_picmes.as"
 #include "mod_smart.as"
+
+#module
+#deffunc fprt str p1
+	i=0 :st=p1
+	gmode 2
+	repeat
+		a=peek(st,i):i++:if a=0 : break
+		if a=13 {
+			a=peek(st,i) :if a=10 : i++
+			continue	; 改行
+		} else {
+			celput 2,a
+		}
+	loop
+	gmode 1
+	return
+#global
 
 	randomize
 
 	smart_init
-	picmes_init 2
-
+	celload "font.png",2 :celdiv 2,8,12
 	celload "crew.png",3 :celdiv 3,32,38
-	celload "title.png",1 :celdiv 1,320,480
+	celload "title.png",4 :celdiv 4,320,480
 
-	dim act_tap,8 :dim tap,8 :sdim cmds,8
+	dim act_tap,8 :dim tap,8 :sdim cmds,16,8
 	dim map,200 :sdim lns,64,48
 	cmds="REPORT","WARP ENGINE","GALAXY MAP","LR. SENSOR","TORPEDO","SR. SENSOR","PHASER"
 	setcls 0,0
 ;---
 *startrek
-	pos 0,0 :celput 1,0
-	pos 58,250 :picmes "DO YOU WANT A DIFFICULT GAME?"
+	pos 0,0 :celput 4,0
+	pos 58,250 :fprt "DO YOU WANT A DIFFICULT GAME?"
 	y=2999 :df=0 :row=-1
 	gosub *y_or_n :if a="Y" or a="y" :y=999 :df=1
 
@@ -113,7 +128,7 @@
 
 *repair_ok
 	e=4000 :f=10 :o=1
-	repeat 7 :map(64+cnt)=0:loop
+	repeat 7 :map(64+cnt)=0 :loop
 	return
 
 *ln165
@@ -264,7 +279,7 @@
 	goto *captain
 ;---
 *warp
-	j=5 :gosub *damaged :;if i=0 :picmes "\n"	HSPCLでは不要
+	j=5 :gosub *damaged
 
 *ln470
 	gosub *ang_set :mj="SECTOR DISTANCE "+ds :gosub *pr
@@ -275,14 +290,19 @@
 		mj="     WE CAN TRY 2 AT MOST, SIR." :gosub *pr :mj="" :gosub *pr
 		goto *ln470
 	}
-	if w>91 {
-		w=91 :mj="001@ SPOCK:" :gosub *pr
-		mj="     ARE YOU SURE, CAPTAIN?" :gosub *pr
+	if w>9 {
+		spok- :if spok<1 {
+			mj="001@ SPOCK:" :gosub *pr
+			mj="     ARE YOU SURE, CAPTAIN?" :gosub *pr
+			mj="" :gosub *pr :spok=3
+		}
+	} else {
+		spok=5
 	}
 	if e<(w*w/2) {
 		mj="003@ SCOTTY:" :gosub *pr
 		mj="     SIR, WE DO NOT HAVE THE ENERGY." :gosub *pr
-		goto *captain
+		mj="" :gosub *pr :goto *captain
 	}
 	gosub *course:if r=0 :goto *captain
 	d=d-1 :e=e-w*w/2 :map(8*x+y+62)=0
@@ -380,7 +400,7 @@
 	redraw 0 :color 0,0,0 :boxf
 	row+ :lns(row)=mj :lc=row :if lc>23 :lc=23
 	repeat 1+lc
-		mj=lns(row-lc+cnt) :pos 0,12*cnt :picmes mj
+		mj=lns(row-lc+cnt) :pos 0,12*cnt :fprt mj
 		ch=strmid(mj,3,1)
 		if ch="@" {
 			pos 0,12*cnt :celput 3,int(mj)+7*df
@@ -401,7 +421,7 @@
 		repeat 2 :xx=10+160*cnt :yy=330
 			;タップ用の四角
 			color 0,0,240-80*tap(cnt) :boxf xx,yy,xx+140,yy+32
-			color 255,255,255 :pos xx+8,yy+8 :if cnt=0 :picmes "Yes" :else :picmes "No"
+			color 255,255,255 :pos xx+8,yy+8 :if cnt=0 :fprt "Yes" :else :fprt "No"
 
 			;タップを取得 (タップ開始から400ミリ秒以内に指が離されればタップ終了とみなす)	
 			tap(cnt)=smart_tap(act_tap(cnt),xx,yy,xx+140,yy+32,400)
@@ -439,13 +459,13 @@
 		clr=smart_tap(act_clr,10,10,300,300,400)
 		if clr=2 :boxf 0,0,320,320 :row=-1
 
-		pos 27,460 :picmes "***PLEASE USE ONE OF THESE COMMANDS***"
+		pos 27,460 :fprt "***PLEASE USE ONE OF THESE COMMANDS***"
 
 		repeat 6 :xx=10+160*(cnt\2) :yy=300+40*(cnt/2)
 
 			;タップ用の四角
 			color 0,0,240-80*tap(cnt) :boxf xx,yy,xx+140,yy+32
-			color 255,255,255 :pos xx+8,yy+8 :picmes cmds(cnt)
+			color 255,255,255 :pos xx+8,yy+8 :fprt cmds(cnt)
 
 			;タップを取得 (タップ開始から400ミリ秒以内に指が離されればタップ終了とみなす)	
 			tap(cnt)=smart_tap(act_tap(cnt),xx,yy,xx+140,yy+32,400)
@@ -456,7 +476,7 @@
 
 		;ドラッグ用の四角
 		color 0,0,240-80*drag :boxf 10,420,310,452
-		color 255,255,255 :pos 18,428 :picmes cmds(6)+":"+en
+		color 255,255,255 :pos 18,428 :fprt cmds(6)+":"+en
 		en=e*(drag_xy(0)-100)/150
 		color 80+80*drag,0,255 :boxf drag_xy(0),drag_xy(1),drag_xy(0)+drag_xy(2),drag_xy(1)+drag_xy(3)
 
@@ -500,8 +520,8 @@
 		smart_analog act_ang,result_info,anlg_cntr_x,anlg_cntr_y,circ_sz_hf		; 仮想アナログスティック操作
 
 		xx=(result_info(7)+90)\360 :yy=result_info(3)/7
-		if a="W" :pos 10,300 :picmes "SECTOR DISTANCE:"+ds
-		pos 170,300 :picmes "COURSE:"+an
+		if a="W" :pos 10,300 :fprt "SECTOR DISTANCE:"+ds
+		pos 170,300 :fprt "COURSE:"+an
 
 		color 255,0,0 :boxf result_info(1)-box_sz,result_info(2)-box_sz,result_info(1)+box_sz,result_info(2)+box_sz
 
