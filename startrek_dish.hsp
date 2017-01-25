@@ -9,7 +9,7 @@
 		a=peek(st,i):i++:if a=0 : break
 		if a=13 {
 			a=peek(st,i) :if a=10 : i++
-			continue	; ‰üs
+			continue	; æ”¹è¡Œ
 		} else {
 			celput 2,a
 		}
@@ -20,17 +20,19 @@
 
 	randomize
 
-	smart_init
 	celload "font.png",2 :celdiv 2,8,12
 	celload "crew.png",3 :celdiv 3,32,38
 	celload "title.png",4 :celdiv 4,320,480
 
-	dim act_tap,8 :dim tap,8 :sdim cmds,16,8
-	dim map,200 :sdim lns,64,48
+	dim act_tap,8 :dim tap,8 :dim drag_xy,4
+	dim map,200 :sdim lns,64,48	:sdim cmds,16,8
 	cmds="REPORT","WARP ENGINE","GALAXY MAP","LR. SENSOR","TORPEDO","SR. SENSOR","PHASER"
-	setcls 0,0
+;	setcls 0,0
+	setreq SYSREQ_CLSMODE,0
+	setreq SYSREQ_CLSCOLOR,0
 ;---
 *startrek
+	redraw 0 :color 0,0,0 :boxf
 	pos 0,0 :celput 4,0
 	pos 58,250 :fprt "DO YOU WANT A DIFFICULT GAME?"
 	y=2999 :df=0 :row=-1
@@ -419,14 +421,14 @@
 		redraw 0 :color 0,0,0 :boxf 0,320,320,480
 
 		repeat 2 :xx=10+160*cnt :yy=330
-			;ƒ^ƒbƒv—p‚ÌlŠp
+			;ã‚¿ãƒƒãƒ—ç”¨ã®å››è§’
 			color 0,0,240-80*tap(cnt) :boxf xx,yy,xx+140,yy+32
 			color 255,255,255 :pos xx+8,yy+8 :if cnt=0 :fprt "Yes" :else :fprt "No"
 
-			;ƒ^ƒbƒv‚ğæ“¾ (ƒ^ƒbƒvŠJn‚©‚ç400ƒ~ƒŠ•bˆÈ“à‚Éw‚ª—£‚³‚ê‚ê‚Îƒ^ƒbƒvI—¹‚Æ‚İ‚È‚·)	
+			;ã‚¿ãƒƒãƒ—ã‚’å–å¾— (ã‚¿ãƒƒãƒ—é–‹å§‹ã‹ã‚‰400ãƒŸãƒªç§’ä»¥å†…ã«æŒ‡ãŒé›¢ã•ã‚Œã‚Œã°ã‚¿ãƒƒãƒ—çµ‚äº†ã¨ã¿ãªã™)	
 			tap(cnt)=smart_tap(act_tap(cnt),xx,yy,xx+140,yy+32,400)
 
-			;smart_tap‚Ì–ß‚è’l (0:ƒ^ƒbƒv‚³‚ê‚Ä‚È‚¢, 1:ƒ^ƒbƒvŠJn, 2:ƒ^ƒbƒvI—¹(w‚ª—£‚³‚ê‚½))
+			;smart_tapã®æˆ»ã‚Šå€¤ (0:ã‚¿ãƒƒãƒ—ã•ã‚Œã¦ãªã„, 1:ã‚¿ãƒƒãƒ—é–‹å§‹, 2:ã‚¿ãƒƒãƒ—çµ‚äº†(æŒ‡ãŒé›¢ã•ã‚ŒãŸ))
 			if tap(cnt)=2 :no=cnt :ok=1 :break
 		loop
 
@@ -440,17 +442,16 @@
 ;---
 *commands
 	smart_init
-	smart_add :act_clr=stat		; ã‰æ–ÊƒNƒŠƒA—pƒ^ƒbƒv
-	clr=0						;
+	smart_add :act_clr=stat		; ä¸Šç”»é¢ã‚¯ãƒªã‚¢ç”¨ã‚¿ãƒƒãƒ—
+	clr=0
 	repeat 6
-		smart_add :act_tap(cnt)=stat	; ƒRƒ}ƒ“ƒh—pƒ^ƒbƒv
-		tap(cnt)=0						; Report,Warp,GalaxyMap,LR.Sensor,Torpedo,SR.Sensor
+		smart_add :act_tap(cnt)=stat	; ä»¥ä¸‹ã‚³ãƒãƒ³ãƒ‰ç”¨ã‚¿ãƒƒãƒ—
+		tap(cnt)=0						; Report, Warp, GalaxyMap, LR.Sensor, Torpedo, SR.Sensor
 	loop
 
-	smart_add :act_drag=stat	; ƒRƒ}ƒ“ƒh—pƒhƒ‰ƒbƒO
-	drag=0						; Phaser
-	;ƒhƒ‰ƒbƒO‚Ìboxf‚ÌˆÊ’u
-	dim drag_xy,4 :drag_xy=100,420,32,32
+	smart_add :act_drag=stat	; Phaserã‚³ãƒãƒ³ãƒ‰ç”¨ãƒ‰ãƒ©ãƒƒã‚°
+	drag=0
+	drag_xy=100,420,32,32		;ãƒ‰ãƒ©ãƒƒã‚°ã®boxfã®ä½ç½®
 
 	ok=0 :en=0
 	repeat
@@ -463,27 +464,27 @@
 
 		repeat 6 :xx=10+160*(cnt\2) :yy=300+40*(cnt/2)
 
-			;ƒ^ƒbƒv—p‚ÌlŠp
+			;ã‚¿ãƒƒãƒ—ç”¨ã®å››è§’
 			color 0,0,240-80*tap(cnt) :boxf xx,yy,xx+140,yy+32
 			color 255,255,255 :pos xx+8,yy+8 :fprt cmds(cnt)
 
-			;ƒ^ƒbƒv‚ğæ“¾ (ƒ^ƒbƒvŠJn‚©‚ç400ƒ~ƒŠ•bˆÈ“à‚Éw‚ª—£‚³‚ê‚ê‚Îƒ^ƒbƒvI—¹‚Æ‚İ‚È‚·)	
+			;ã‚¿ãƒƒãƒ—ã‚’å–å¾— (ã‚¿ãƒƒãƒ—é–‹å§‹ã‹ã‚‰400ãƒŸãƒªç§’ä»¥å†…ã«æŒ‡ãŒé›¢ã•ã‚Œã‚Œã°ã‚¿ãƒƒãƒ—çµ‚äº†ã¨ã¿ãªã™)	
 			tap(cnt)=smart_tap(act_tap(cnt),xx,yy,xx+140,yy+32,400)
 
-			;smart_tap‚Ì–ß‚è’l (0:ƒ^ƒbƒv‚³‚ê‚Ä‚È‚¢, 1:ƒ^ƒbƒvŠJn, 2:ƒ^ƒbƒvI—¹(w‚ª—£‚³‚ê‚½))
+			;smart_tapã®æˆ»ã‚Šå€¤ (0:ã‚¿ãƒƒãƒ—ã•ã‚Œã¦ãªã„, 1:ã‚¿ãƒƒãƒ—é–‹å§‹, 2:ã‚¿ãƒƒãƒ—çµ‚äº†(æŒ‡ãŒé›¢ã•ã‚ŒãŸ))
 			if tap(cnt)=2 :no=cnt :ok=1 :break
 		loop
 
-		;ƒhƒ‰ƒbƒO—p‚ÌlŠp
+		;ãƒ‰ãƒ©ãƒƒã‚°ç”¨ã®å››è§’
 		color 0,0,240-80*drag :boxf 10,420,310,452
 		color 255,255,255 :pos 18,428 :fprt cmds(6)+":"+en
 		en=e*(drag_xy(0)-100)/150
 		color 80+80*drag,0,255 :boxf drag_xy(0),drag_xy(1),drag_xy(0)+drag_xy(2),drag_xy(1)+drag_xy(3)
 
-		;ƒhƒ‰ƒbƒO‚ğæ“¾ (400ƒ~ƒŠ•bˆÈã‰Ÿ‚³‚ê‚Ä‚¢‚ê‚Îƒhƒ‰ƒbƒOŠJn‚Æ‚·‚é)
+		;ãƒ‰ãƒ©ãƒƒã‚°ã‚’å–å¾— (400ãƒŸãƒªç§’ä»¥ä¸ŠæŠ¼ã•ã‚Œã¦ã„ã‚Œã°ãƒ‰ãƒ©ãƒƒã‚°é–‹å§‹ã¨ã™ã‚‹)
 		drag=smart_drag(act_drag,drag_xy(0),drag_xy(1),drag_xy(0)+drag_xy(2),drag_xy(1)+drag_xy(3),400)
 
-		;ƒhƒ‰ƒbƒO—p‚ÌlŠp (0:ƒhƒ‰ƒbƒO‚³‚ê‚Ä‚È‚¢, 1:ƒhƒ‰ƒbƒO’†, 2:ƒhƒ‰ƒbƒOI—¹(w‚ª—£‚³‚ê‚½))
+		;ãƒ‰ãƒ©ãƒƒã‚°ç”¨ã®å››è§’ (0:ãƒ‰ãƒ©ãƒƒã‚°ã•ã‚Œã¦ãªã„, 1:ãƒ‰ãƒ©ãƒƒã‚°ä¸­, 2:ãƒ‰ãƒ©ãƒƒã‚°çµ‚äº†(æŒ‡ãŒé›¢ã•ã‚ŒãŸ))
 		if drag=0 :start_x=mousex-drag_xy(0)
 		if drag=1 :drag_xy(0)=limit(mousex-start_x,100,278)
 		if drag=2 :no=6 :ok=1
@@ -496,20 +497,20 @@
 *ang_set
 	smart_init
 	smart_add :act_ang=stat
-	result_info=0				; ‰¼‘zƒAƒiƒƒOƒXƒeƒBƒbƒN‚Ìî•ñæ“¾—p
+	result_info=0				; ä»®æƒ³ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æƒ…å ±å–å¾—ç”¨
 	rf=0
-;--- ‰~‚Ì•\¦—p•Ï”
-	circ_sz=150						; ‰~‚Ì‘å‚«‚³(circle–½—ß—p)
-	circ_sz_hf=circ_sz/2			; ‰~‚Ì”¼Œa(‰¼‘zƒAƒiƒƒOƒXƒeƒBƒbƒN–½—ß—p‚É‚àg—p)
-	circ_x=85						; ‰~‚Ì•`‰æŠJn‚·‚éXÀ•W(circle–½—ß—p)
-	circ_y=320						; ‰~‚Ì•`‰æŠJn‚·‚éYÀ•W(circle–½—ß—p)
-	circ_x2=circ_x+circ_sz			; ‰~‚Ì•`‰æI—¹‚·‚éXÀ•W(circle–½—ß—p)
-	circ_y2=circ_y+circ_sz			; ‰~‚Ì•`‰æI—¹‚·‚éYÀ•W(circle–½—ß—p)
-;--- ‰¼‘zƒAƒiƒƒOƒXƒeƒBƒbƒN—p•Ï”
-	anlg_cntr_x=circ_x+circ_sz_hf	; ‰¼‘zƒAƒiƒƒOƒXƒeƒBƒbƒN‚Ì’†S“_‚ÌXÀ•W(‰¼‘zƒAƒiƒƒOƒXƒeƒBƒbƒN–½—ß—p)
-	anlg_cntr_y=circ_y+circ_sz_hf	; ‰¼‘zƒAƒiƒƒOƒXƒeƒBƒbƒN‚Ì’†S“_‚ÌYÀ•W(‰¼‘zƒAƒiƒƒOƒXƒeƒBƒbƒN–½—ß—p)
-;--- ƒ^ƒbƒ`‚µ‚Ä‚¢‚éêŠ(¡)‚Ì‘å‚«‚³
-	box_sz=5						; ÔF‚Ì¡‚Ì‘å‚«‚³
+;--- å††ã®è¡¨ç¤ºç”¨å¤‰æ•°
+	circ_sz=150						; å††ã®å¤§ãã•(circleå‘½ä»¤ç”¨)
+	circ_sz_hf=circ_sz/2			; å††ã®åŠå¾„(ä»®æƒ³ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯å‘½ä»¤ç”¨ã«ã‚‚ä½¿ç”¨)
+	circ_x=85						; å††ã®æç”»é–‹å§‹ã™ã‚‹Xåº§æ¨™(circleå‘½ä»¤ç”¨)
+	circ_y=320						; å††ã®æç”»é–‹å§‹ã™ã‚‹Yåº§æ¨™(circleå‘½ä»¤ç”¨)
+	circ_x2=circ_x+circ_sz			; å††ã®æç”»çµ‚äº†ã™ã‚‹Xåº§æ¨™(circleå‘½ä»¤ç”¨)
+	circ_y2=circ_y+circ_sz			; å††ã®æç”»çµ‚äº†ã™ã‚‹Yåº§æ¨™(circleå‘½ä»¤ç”¨)
+;--- ä»®æƒ³ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯ç”¨å¤‰æ•°
+	anlg_cntr_x=circ_x+circ_sz_hf	; ä»®æƒ³ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ä¸­å¿ƒç‚¹ã®Xåº§æ¨™(ä»®æƒ³ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯å‘½ä»¤ç”¨)
+	anlg_cntr_y=circ_y+circ_sz_hf	; ä»®æƒ³ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ä¸­å¿ƒç‚¹ã®Yåº§æ¨™(ä»®æƒ³ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯å‘½ä»¤ç”¨)
+;--- ã‚¿ãƒƒãƒã—ã¦ã„ã‚‹å ´æ‰€(â– )ã®å¤§ãã•
+	box_sz=5						; èµ¤è‰²ã®â– ã®å¤§ãã•
 
 	repeat
 		redraw 0 :color 0,0,0 :boxf 0,300,320,480
@@ -517,7 +518,7 @@
 
 		an=xx :ds=yy
 
-		smart_analog act_ang,result_info,anlg_cntr_x,anlg_cntr_y,circ_sz_hf		; ‰¼‘zƒAƒiƒƒOƒXƒeƒBƒbƒN‘€ì
+		smart_analog act_ang,result_info,anlg_cntr_x,anlg_cntr_y,circ_sz_hf		; ä»®æƒ³ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯æ“ä½œ
 
 		xx=(result_info(7)+90)\360 :yy=result_info(3)/7
 		if a="W" :pos 10,300 :fprt "SECTOR DISTANCE:"+ds
@@ -531,4 +532,3 @@
 		redraw 1 :await 16
 	loop
 	return
-
