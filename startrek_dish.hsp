@@ -6,9 +6,9 @@
 	i=0 :st=p1
 	gmode 2
 	repeat
-		a=peek(st,i):i++:if a=0 : break
+		a=peek(st,i) :i++ :if a=0 :break
 		if a=13 {
-			a=peek(st,i) :if a=10 : i++
+			a=peek(st,i) :if a=10 :i++
 			continue	; 改行
 		} else {
 			celput 2,a
@@ -25,18 +25,15 @@
 	celload "title.png",4 :celdiv 4,320,480
 
 	dim act_tap,8 :dim tap,8 :dim drag_xy,4
-	dim map,200 :sdim lns,64,48	:sdim cmds,16,8
+	dim map,200 :sdim lns,64,48 :sdim cmds,16,8
 	cmds="REPORT","WARP ENGINE","GALAXY MAP","LR. SENSOR","TORPEDO","SR. SENSOR","PHASER"
 ;	setcls 0,0
 	setreq SYSREQ_CLSMODE,0
 	setreq SYSREQ_CLSCOLOR,0
 ;---
 *startrek
-	redraw 0 :color 0,0,0 :boxf
-	pos 0,0 :celput 4,0
-	pos 58,250 :fprt "DO YOU WANT A DIFFICULT GAME?"
-	y=2999 :df=0 :row=-1
-	gosub *y_or_n :if a="Y" or a="y" :y=999 :df=1
+	y=-1 :row=-1
+	gosub *y_or_n :df=(a="Y" or a="y") :y=2999-2000*df
 
 	repeat
 		k=0 :b=0 :d=30
@@ -48,10 +45,10 @@
 		if b>1 and k>3 :break
 	loop
 
-	mj="000@ STARDATE 3200:" :gosub *pr
-	mj="     OUR MISSION IS TO DESTROY "+k+" KLINGONS" :gosub *pr
-	mj="      IN 30 STARDATES." :gosub *pr
-	mj="THERE ARE "+b+" STARBASES." :gosub *pr
+	mj="000@ STARDATE 3200:" :gosub *lnset
+	mj="     OUR MISSION IS TO DESTROY" :gosub *lnset
+	mj="      "+k+" KLINGONS IN 30 STARDATES." :gosub *lnset
+	mj="THERE ARE "+b+" STARBASES." :gosub *lnset
 	gosub *repair_ok :c=0 :h=k
 
 *ln40
@@ -66,40 +63,42 @@
 		loop
 	}
 	gosub *ln175 :m=m-100*n :i=2 :if (m/10)!0 :gosub *ln165
-	m=m-m/10*10 :i=3 :if m!0 :repeat m :gosub *ln165 :loop
+	m=m-(m/10)*10 :i=3 :if m!0 :repeat m :gosub *ln165 :loop
 
 *ln65
 	gosub *dock :gosub *klingon_atk :if k!0 :goto *ln95
-	mj="--------------------" :gosub *pr
-	mj="MISSION ACCOMPLISHED." :gosub *pr
-	if d<3 :mj="BOY, YOU BARELY MADE IT." :gosub *pr
-	if d>5 :mj="GOOD WORK..." :gosub *pr
-	if d>9 :mj="FANTASTIC!" :gosub *pr
-	if d>13 :mj="UNBELIEVABLE!" :gosub *pr
-	d=30-d :i=h*100/d*10 :mj="006@ "+h+" KLINGONS IN "+d+" STARDATES. ("+i+")" :gosub *pr
-	j=100*(c=0)-5*c :mj="     "+c+" CASUALTIES INCURRED. ("+j+")" :gosub *pr
-	mj="     YOUR SCORE:"+(i+j) :gosub *pr :goto *ln110
+	mj="--------------------" :gosub *lnset
+	mj="MISSION ACCOMPLISHED." :gosub *lnset
+	if d<3 :mj="BOY, YOU BARELY MADE IT." :gosub *lnset
+	if d>5 :mj="GOOD WORK..." :gosub *lnset
+	if d>9 :mj="FANTASTIC!" :gosub *lnset
+	if d>13 :mj="UNBELIEVABLE!" :gosub *lnset
+	d=30-d :i=h*100/d*10 :mj="006@ "+h+" KLINGONS IN "+d+" STARDATES. ("+i+")" :gosub *lnset
+	j=100*(c=0)-5*c :mj="     "+c+" CASUALTIES INCURRED. ("+j+")" :gosub *lnset
+	mj="     YOUR SCORE:"+(i+j) :gosub *lnset :goto *ln110
 
 *ln95
 	if d<0 {
-		mj="IT'S TOO LATE," :gosub *pr
-		mj=" THE FEDERATION HAS BEEN CONQUERED." :gosub *pr
+		mj="IT'S TOO LATE," :gosub *lnset
+		mj=" THE FEDERATION HAS BEEN CONQUERED." :gosub *lnset
 		goto *ln110
 	}
 	if e>=0 :goto *captain
-	mj="ENTERPRISE DESTROYED" :gosub *pr
-	if (h-k)>9 :mj="BUT YOU WERE A GOOD MAN" :gosub *pr
+	mj="ENTERPRISE DESTROYED" :gosub *lnset
+	if (h-k)>9 :mj="BUT YOU WERE A GOOD MAN" :gosub *lnset
 
 *ln110
-	mj="--------------------" :gosub *pr
-	y=987 :mj="ANOTHERE GAME?" :gosub *pr :gosub *y_or_n
+	mj="--------------------" :gosub *lnset
+	y=987 :mj="ANOTHERE GAME?" :gosub *lnset :gosub *y_or_n
 	if a="Y" or a="y" :goto *startrek
-	mj="GOOD BYE." :gosub *pr :redraw 1 :await 1
-	stop
+	mj="GOOD BYE." :gosub *lnset
+	redraw 0 :color 0,0,0 :boxf
+	gosub *pr :redraw 1 :await 1500
+	end
 
 ;---
 *captain
-	mj="CAPTAIN?" :gosub *pr :gosub *commands
+	mj="CAPTAIN?" :gosub *lnset :gosub *commands
 	if row>23 :row=-1
 	if a="R" or a="r" :goto *report
 	if a="S" or a="s" :goto *sr_sensor
@@ -121,9 +120,9 @@
 	if aa :o=0 :return
 
 	if o=0 {
-		mj="004@ SULU:" :gosub *pr
-		mj="     CAPTAIN, WE ARE DOCKED AT STARBASE." :gosub *pr
-		mj="" :gosub *pr
+		mj="004@ SULU:" :gosub *lnset
+		mj="     CAPTAIN, WE ARE DOCKED AT STARBASE." :gosub *lnset
+		mj="" :gosub *lnset
 	} else {
 		return
 	}
@@ -138,12 +137,12 @@
 	map(a)=i :return
 
 *ln175
-	mj="ENTERPRISE IN Q-"+u+""+v+" S-"+x+""+y :gosub *pr
+	mj="ENTERPRISE IN Q-"+u+""+v+" S-"+x+""+y :gosub *lnset
 	return
 ;---
 *galaxy_map
 	gosub *ln175 :j=2 :gosub *damaged :if i!0 :goto *captain
-	mj=" OF GALAXY MAP" :gosub *pr
+	mj=" OF GALAXY MAP" :gosub *lnset
 	repeat 8
 		i=cnt :z=""+(i+1)+":"
 		repeat 8
@@ -152,10 +151,10 @@
 			if q<10 :z=z+" "
 			z=z+" "+q
 		loop
-		mj=""+z :gosub *pr
+		mj=""+z :gosub *lnset
 	loop
-	z="  " :repeat 8 :z=z+"  .." :loop :mj=""+z :gosub *pr
-	z="  " :repeat 8 :z=z+"   "+(cnt+1) :loop :mj=""+z+"\n" :gosub *pr
+	z="  " :repeat 8 :z=z+"  .." :loop :mj=""+z :gosub *lnset
+	z="  " :repeat 8 :z=z+"   "+(cnt+1) :loop :mj=""+z+"\n" :gosub *lnset
 	goto *captain
 ;---
 *lr_sensor
@@ -169,7 +168,7 @@
 			if a<10 :z=z+" "
 			z=z+" "+a
 		loop
-		mj=""+z :gosub *pr
+		mj=""+z :gosub *lnset
 	loop
 	goto *captain
 ;---
@@ -185,24 +184,24 @@
 			if m=3 :z=z+" *"
 			if m=4 :z=z+" E"
 		loop
-		mj=""+z :gosub *pr
+		mj=""+z :gosub *lnset
 	loop
 	z=" "
 	repeat 8 :z=z+" "+(1+cnt) :loop
-	mj=""+z :gosub *pr :goto *captain
+	mj=""+z :gosub *lnset :goto *captain
 ;---
 *phaser
 	j=4 :gosub *damaged :if i!0 :goto *captain
-	mj=" ENERGIZED. UNITS TO FIRE "+en :gosub *pr	;input a,4,2
+	mj=" ENERGIZED. UNITS TO FIRE "+en :gosub *lnset	;input a,4,2
 	a=int(en)
 	if a<1 :goto *captain
 	if a>e {
-		mj="001@ SPOCK:" :gosub *pr
-		mj="     WE HAVE ONLY "+e+" UNITS." :gosub *pr
-		mj="" :gosub *pr
+		mj="001@ SPOCK:" :gosub *lnset
+		mj="     WE HAVE ONLY "+e+" UNITS." :gosub *lnset
+		mj="" :gosub *lnset
 		goto *captain
 	}
-	e=e-a :if n<1 :mj="PHASER FIRED AT EMPTY SPACE." :gosub *pr :goto *ln65
+	e=e-a :if n<1 :mj="PHASER FIRED AT EMPTY SPACE." :gosub *lnset :goto *ln65
 	a=a/n
 	repeat 6 :m=135+cnt
 		if map(m)!0 {
@@ -212,40 +211,40 @@
 	goto *ln65
 
 *fire
-	if a>1090 :mj="...OVERLOADED.." :gosub *pr :j=4 :map(67)=1 :a=9 :gosub *damaged
+	if a>1090 :mj="...OVERLOADED.." :gosub *lnset :j=4 :map(67)=1 :a=9 :gosub *damaged
 	i=map(m+6)-x :j=map(m+12)-y :s=a*30/(30+i*i+j*j)+1 :return
 
 *hits
 	z=z+"KLINGON AT S-"+map(m+6)+""+map(m+12)
 	map(m)=map(m)-s
-	if map(m)>0 :mj=""+z+" **DAMAGED**" :gosub *pr :return
+	if map(m)>0 :mj=""+z+" **DAMAGED**" :gosub *lnset :return
 	map(m)=0 :i=8*u+v-9 :j=map(i)/abs(map(i)) :map(i)=map(i)-100*j :k=k-1
-	i=8*map(m+6)+map(m+12)+62 :map(i)=0 :n=n-1 :mj=""+z+" ***DESTROYED***" :gosub *pr
+	i=8*map(m+6)+map(m+12)+62 :map(i)=0 :n=n-1 :mj=""+z+" ***DESTROYED***" :gosub *lnset
 	return
 
 *klingon_atk
 	if n=0 :return
-	mj="KLINGON ATTACK" :gosub *pr
-	if o!0 :mj="STARBASE PROTECTS ENTERPRISE" :gosub *pr :return
+	mj="KLINGON ATTACK" :gosub *lnset
+	if o!0 :mj="STARBASE PROTECTS ENTERPRISE" :gosub *lnset :return
 	t=0
 	repeat 6
 		m=135+cnt
 		if map(m)!0 {
 			a=(map(m)+rnd(map(m))+1)/2 :gosub *fire
 			t=t+s :i=map(m+6) :j=map(m+12)
-			mj=" "+s+" UNITS HIT FROM KLINGON AT S-"+i+""+j :gosub *pr
+			mj=" "+s+" UNITS HIT FROM KLINGON AT S-"+i+""+j :gosub *lnset
 		}
 	loop
-	e=e-t :if e<=0 :mj="*** BANG ***" :gosub *pr :return
-	mj=""+e+" UNITS OF ENERGY LEFT." :gosub *pr
+	e=e-t :if e<=0 :mj="*** BANG ***" :gosub *lnset :return
+	mj=""+e+" UNITS OF ENERGY LEFT." :gosub *lnset
 	if (rnd(e/4)+1)>t :return
 
 *casualties
 	if map(70)=0 :map(70)=rnd(t/50+1)+1 :j=7 :goto *damaged
 	j=rnd(6)+1 :map(j+63)=rnd(t/99+1)+1+map(j+63) :i=rnd(8)+2 :c=c+i
-	mj="002@ MC COY:" :gosub *pr
-	mj="     SICKBAY TO BRIDGE," :gosub *pr
-	mj="      WE SUFFERED "+i+" CASUALTIES." :gosub *pr
+	mj="002@ MC COY:" :gosub *lnset
+	mj="     SICKBAY TO BRIDGE," :gosub *lnset
+	mj="      WE SUFFERED "+i+" CASUALTIES." :gosub *lnset
 ;---
 *damaged
 	i=map(j+63)
@@ -256,25 +255,25 @@
 	if j=5 :z="WARP ENGINE"
 	if j=6 :z="PHOTON TORPEDO TUBES"
 	if j=7 :z="SHIELD"
-	IF i=0 :mj=""+z :gosub *pr :return
-	mj=""+z+" DAMAGED, " :gosub *pr
-	mj=" "+i+" STARDATES ESTIMATED FOR REPAIR" :gosub *pr
+	IF i=0 :mj=""+z :gosub *lnset :return
+	mj=""+z+" DAMAGED, " :gosub *lnset
+	mj=" "+i+" STARDATES ESTIMATED FOR REPAIR" :gosub *lnset
 	return
 ;---
 *report
-	mj="STATUS REPORT:" :gosub *pr
-	mj="STARDATE      "+(3230-D) :gosub *pr
-	mj="TIME LEFT     "+D :gosub *pr
+	mj="STATUS REPORT:" :gosub *lnset
+	mj="STARDATE      "+(3230-D) :gosub *lnset
+	mj="TIME LEFT     "+D :gosub *lnset
 	z="GREEN"
 	if o!0 :z="DOCKED"
 	if n!0 :z="RED"
 	if e<999 :z="YELLOW"
-	mj="CONDITION     "+z :gosub *pr
-	mj="POSITION      Q-"+u+""+v+" S-"+x+""+y :gosub *pr
-	mj="ENERGY        "+e :gosub *pr
-	mj="TORPEDOES     "+f :gosub *pr
-	mj="KLINGONS LEFT "+k :gosub *pr
-	mj="STARBASES     "+b :gosub *pr
+	mj="CONDITION     "+z :gosub *lnset
+	mj="POSITION      Q-"+u+""+v+" S-"+x+""+y :gosub *lnset
+	mj="ENERGY        "+e :gosub *lnset
+	mj="TORPEDOES     "+f :gosub *lnset
+	mj="KLINGONS LEFT "+k :gosub *lnset
+	mj="STARBASES     "+b :gosub *lnset
 	repeat 7 :j=1+cnt
 		if map(j+63) :gosub *damaged
 	loop
@@ -284,27 +283,27 @@
 	j=5 :gosub *damaged
 
 *ln470
-	gosub *ang_set :mj="SECTOR DISTANCE "+ds :gosub *pr
+	gosub *ang_set :mj="SECTOR DISTANCE "+ds :gosub *lnset
 	w=int(ds)
 	if w<1 :goto *captain
 	if i*(w>2) {
-		mj="005@ CHEKOV:" :gosub *pr
-		mj="     WE CAN TRY 2 AT MOST, SIR." :gosub *pr :mj="" :gosub *pr
+		mj="005@ CHEKOV:" :gosub *lnset
+		mj="     WE CAN TRY 2 AT MOST, SIR." :gosub *lnset :mj="" :gosub *lnset
 		goto *ln470
 	}
 	if w>9 {
 		spok- :if spok<1 {
-			mj="001@ SPOCK:" :gosub *pr
-			mj="     ARE YOU SURE, CAPTAIN?" :gosub *pr
-			mj="" :gosub *pr :spok=3
+			mj="001@ SPOCK:" :gosub *lnset
+			mj="     ARE YOU SURE, CAPTAIN?" :gosub *lnset
+			mj="" :gosub *lnset :spok=3
 		}
 	} else {
 		spok=5
 	}
 	if e<(w*w/2) {
-		mj="003@ SCOTTY:" :gosub *pr
-		mj="     SIR, WE DO NOT HAVE THE ENERGY." :gosub *pr
-		mj="" :gosub *pr :goto *captain
+		mj="003@ SCOTTY:" :gosub *lnset
+		mj="     SIR, WE DO NOT HAVE THE ENERGY." :gosub *lnset
+		mj="" :gosub *lnset :goto *captain
 	}
 	gosub *course:if r=0 :goto *captain
 	d=d-1 :e=e-w*w/2 :map(8*x+y+62)=0
@@ -320,23 +319,23 @@
 	loop
 	if q=1 :map(8*x+y+62)=4 :gosub *ln175 :goto *ln65
 	if q!2 {
-		mj="**EMERGENCY STOP**" :gosub *pr
-		mj="001@ SPOCK:" :gosub *pr
-		mj="     TO ERR IS HUMAN." :gosub *pr :mj="" :gosub *pr
+		mj="**EMERGENCY STOP**" :gosub *lnset
+		mj="001@ SPOCK:" :gosub *lnset
+		mj="     TO ERR IS HUMAN." :gosub *lnset :mj="" :gosub *lnset
 	}
 	p=u*72+p/5+w/5*s/r-9 :u=p/72 :g=v*72+g/5+w/5*t/r-9 :v=g/72
-	if rnd(9)<1 :mj="***SPACE STORM***" :gosub *pr :t=100 :gosub *casualties
+	if rnd(9)<1 :mj="***SPACE STORM***" :gosub *lnset :t=100 :gosub *casualties
 	if (u>0)*(u<9)*(v>0)*(v<9) :x=(p+9-72*u)/9 :y=(g+9-72*v)/9 :goto *ln45
-	mj="**YOU WANDERED OUTSIDE THE GALAXY**" :gosub *pr
-	mj="ON BOARD COMPUTER TAKES OVER, " :gosub *pr
-	mj=" AND SAVED YOUR LIFE" :gosub *pr
+	mj="**YOU WANDERED OUTSIDE THE GALAXY**" :gosub *lnset
+	mj="ON BOARD COMPUTER TAKES OVER, " :gosub *lnset
+	mj=" AND SAVED YOUR LIFE" :gosub *lnset
 	goto *ln40
 ;---
 *torpedo
 	j=6 :gosub *damaged :if i!0 :goto *captain
-	if f=0 :mj=" EMPTY" :gosub *pr :goto *captain
-	mj=" LOADED" :gosub *pr :gosub *ang_set :gosub *course :if r=0 :goto *captain
-	mj="TORPEDO TRACK " :gosub *pr :z=""
+	if f=0 :mj=" EMPTY" :gosub *lnset :goto *captain
+	mj=" LOADED" :gosub *lnset :gosub *ang_set :gosub *course :if r=0 :goto *captain
+	mj="TORPEDO TRACK " :gosub *lnset :z=""
 	f=f-1 :p=45*x+22 :g=45*y+22
 
 	q=0
@@ -348,13 +347,13 @@
 			q=map(l) :if q>0 :break
 		}
 	loop
-	mj=z :gosub *pr :z=""
+	mj=z :gosub *lnset :z=""
 	if q=1 :goto *ln590
 	if q=2 :goto *ln595
 	if q=3 :goto *ln600
 	if q=4 :goto *ln605
 	if q=5 :goto *ln610
-	mj="...MISSED" :gosub *pr :goto *ln65
+	mj="...MISSED" :gosub *lnset :goto *ln65
 
 *ln590
 	s=rnd(99)+281
@@ -365,29 +364,30 @@
 
 *ln595
 	b=b-1 :map(l)=0 :map(w)=map(w)-10*r
-	mj="STARBASE DESTROYED" :gosub *pr
-	mj="001@ SPOCK:" :gosub *pr
-	mj="     I OFTEN FIND HUMAN BEHAVIOUR FASCINATING." :gosub *pr
-	mj="" :gosub *pr
+	mj="STARBASE DESTROYED" :gosub *lnset
+	mj="001@ SPOCK:" :gosub *lnset
+	mj="     I OFTEN FIND HUMAN BEHAVIOUR" :gosub *lnset
+	mj="      FASCINATING." :gosub *lnset
+	mj="" :gosub *lnset
 	goto *ln65
 
 *ln600
-	mj="HIT A STAR" :gosub *pr
-	if rnd(9)<2 :mj="TORPEDO ABSORBED" :gosub *pr
+	mj="HIT A STAR" :gosub *lnset
+	if rnd(9)<2 :mj="TORPEDO ABSORBED" :gosub *lnset
 	goto *ln65
 
 *ln605
 	map(l)=0 :map(w)=map(w)-r
-	if rnd(9)<5 :mj="STAR DESTROYED" :gosub *pr
+	if rnd(9)<5 :mj="STAR DESTROYED" :gosub *lnset
 	goto *ln65
 
 *ln610
 	t=300
-	mj="IT NOVAS    ***RADIATION ALARM***" :gosub *pr :gosub *casualties
+	mj="IT NOVAS    ***RADIATION ALARM***" :gosub *lnset :gosub *casualties
 	goto *ln65
 
 *course
-	mj="COURSE "+an :gosub *pr
+	mj="COURSE "+an :gosub *lnset
 	i=int(an)
 	if (i>360)+(i<0) :r=0 :return
 	s=(i+45)/90 :i=i-s*90 :r=(45+i*i)/110+45 :q=(s<4)*s
@@ -396,11 +396,12 @@
 	if q=2 :s=45 :t=-i
 	if q=3 :s=-i :t=-45
 	return
-
+;---
+*lnset
+	row+ :lns(row)=mj :lc=row :if lc>23 :lc=23
+	return
 ;---
 *pr
-	redraw 0 :color 0,0,0 :boxf
-	row+ :lns(row)=mj :lc=row :if lc>23 :lc=23
 	repeat 1+lc
 		mj=lns(row-lc+cnt) :pos 0,12*cnt :fprt mj
 		ch=strmid(mj,3,1)
@@ -418,12 +419,17 @@
 	loop
 	ok=0
 	repeat
-		redraw 0 :color 0,0,0 :boxf 0,320,320,480
-
+		redraw 0 :color 0,0,0 :boxf
+		if y=-1 {
+			pos 0,0 :celput 4
+			pos 44,250 :fprt "DO YOU WANT A DIFFICULT GAME?"
+		} else {
+			gosub *pr
+		}
 		repeat 2 :xx=10+160*cnt :yy=330
 			;タップ用の四角
 			color 0,0,240-80*tap(cnt) :boxf xx,yy,xx+140,yy+32
-			color 255,255,255 :pos xx+8,yy+8 :if cnt=0 :fprt "Yes" :else :fprt "No"
+			pos xx+8,yy+8 :if cnt=0 :fprt "Yes" :else :fprt "No"
 
 			;タップを取得 (タップ開始から400ミリ秒以内に指が離されればタップ終了とみなす)	
 			tap(cnt)=smart_tap(act_tap(cnt),xx,yy,xx+140,yy+32,400)
@@ -443,30 +449,31 @@
 *commands
 	smart_init
 	smart_add :act_clr=stat		; 上画面クリア用タップ
-	clr=0
+	clr=0						;
 	repeat 6
-		smart_add :act_tap(cnt)=stat	; 以下コマンド用タップ
-		tap(cnt)=0						; Report, Warp, GalaxyMap, LR.Sensor, Torpedo, SR.Sensor
+		smart_add :act_tap(cnt)=stat	; コマンド用タップ
+		tap(cnt)=0						; Report,Warp,GalaxyMap,LR.Sensor,Torpedo,SR.Sensor
 	loop
 
-	smart_add :act_drag=stat	; Phaserコマンド用ドラッグ
-	drag=0
-	drag_xy=100,420,32,32		;ドラッグのboxfの位置
+	smart_add :act_drag=stat	; コマンド用ドラッグ
+	drag=0						; Phaser
+	;ドラッグのboxfの位置
+	drag_xy=100,420,32,32
 
 	ok=0 :en=0
 	repeat
-		redraw 0 :color 0,0,0 :boxf 0,320,320,480
-
+		redraw 0 :color 0,0,0 :boxf
+		gosub *pr
 		clr=smart_tap(act_clr,10,10,300,300,400)
-		if clr=2 :boxf 0,0,320,320 :row=-1
+		if clr=2 :boxf :row=-1 :gosub *lnset
 
-		pos 27,460 :fprt "***PLEASE USE ONE OF THESE COMMANDS***"
+		pos 8,460 :fprt "***PLEASE USE ONE OF THESE COMMANDS***"
 
 		repeat 6 :xx=10+160*(cnt\2) :yy=300+40*(cnt/2)
 
 			;タップ用の四角
 			color 0,0,240-80*tap(cnt) :boxf xx,yy,xx+140,yy+32
-			color 255,255,255 :pos xx+8,yy+8 :fprt cmds(cnt)
+			pos xx+8,yy+8 :fprt cmds(cnt)
 
 			;タップを取得 (タップ開始から400ミリ秒以内に指が離されればタップ終了とみなす)	
 			tap(cnt)=smart_tap(act_tap(cnt),xx,yy,xx+140,yy+32,400)
@@ -477,7 +484,7 @@
 
 		;ドラッグ用の四角
 		color 0,0,240-80*drag :boxf 10,420,310,452
-		color 255,255,255 :pos 18,428 :fprt cmds(6)+":"+en
+		pos 18,428 :fprt cmds(6)+":"+en
 		en=e*(drag_xy(0)-100)/150
 		color 80+80*drag,0,255 :boxf drag_xy(0),drag_xy(1),drag_xy(0)+drag_xy(2),drag_xy(1)+drag_xy(3)
 
@@ -513,7 +520,8 @@
 	box_sz=5						; 赤色の■の大きさ
 
 	repeat
-		redraw 0 :color 0,0,0 :boxf 0,300,320,480
+		redraw 0 :color 0,0,0 :boxf
+		gosub *pr
 		color 0,0,255 :circle circ_x,circ_y,circ_x2,circ_y2
 
 		an=xx :ds=yy
@@ -532,3 +540,4 @@
 		redraw 1 :await 16
 	loop
 	return
+
