@@ -27,9 +27,6 @@
 	dim act_tap,8 :dim tap,8 :dim drag_xy,4
 	dim map,200 :sdim lns,64,48 :sdim cmds,16,8
 	cmds="REPORT","WARP ENGINE","GALAXY MAP","LR. SENSOR","TORPEDO","SR. SENSOR","PHASER"
-;	setcls 0,0
-	setreq SYSREQ_CLSMODE,0
-	setreq SYSREQ_CLSCOLOR,0
 ;---
 *startrek
 	y=-1 :row=-1
