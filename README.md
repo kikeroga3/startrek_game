@@ -19,14 +19,16 @@ Windowsでは動くようになったが、Androidでは62行目のabs命令で�
 対策検討中。誰ぞ、良い策はないか？<br>
 <br>
 2017.01.28<br>
-最新のhsp3cnv.exeにしたらAndroidで落ちなくなった。<br>
+OpenHSPから最新のhsp3cnv.exeをGetして上書きして再ビルドしたらAndroidで落ちなくなりました。<br>
 ---<br>
 あと、Androidで画面がおかしくなるのは、作り方に問題がありました。<br>
-Windowsではboxf命令等で画面の一部をクリアした場合、他の部分を残したままredrawを行なうことができますが、<br>
+Windowsではboxf命令等で画面の一部をクリア(例 color 0,0,0 :boxf 0,320,319,479)した場合、<br>
+他の部分を残したままredrawを行なうことができますが、<br>
 AndroidやiOSだとバッファリングの環境などにより正しく動作しないという仕様の違いがあるので、<br>
 必ず、画面上すべてをフレームごとに描画するようにしないといけない。<br>
 ---<br>
-Android画面の上下(320x480の範囲外)におかしな画面コピーがなされる不具合は<br>
-setcls 0,0とかsetreq SYSREQ_CLSMODE,0を外したらなおりました。<br>
+Android画面の上下(320x480の範囲外)に勝手におかしな画面コピーがなされる不具合は<br>
+setcls 0,0とかsetreq SYSREQ_CLSMODE,0を外すだけでなおりました。<br>
+余計なことはしないほうがいいってことですかね…明示的に入れといたつもりが徒になっておりました。<br>
 ---<br>
-
+All Cast Tiny Trek 完成！<br>
