@@ -1,0 +1,11 @@
+sdim map,256*256*2
+screen 0,256,256
+picload "map_src.png"
+repeat 256 :y=cnt
+repeat 256 :x=cnt
+pget x,y
+a=256*(ginfo_r/16)+16*(ginfo_g/16)+(ginfo_b/16)
+wpoke map,512*y+x*2,a
+loop :loop
+bsave "map.bin",map
+title "‚Å‚«‚Ü‚µ‚½"

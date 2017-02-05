@@ -1,0 +1,62 @@
+#include "hsp3dish.as"		;HSP3Dish
+#include "mod_smart.as"
+
+#module
+; 画像フォント表示
+#deffunc fprt str p1
+	i=0 :st=p1
+	gmode 2
+	repeat
+		a=peek(st,i) :i++ :if a=0 :break
+		if a=13 {
+			a=peek(st,i) :if a=10 :i++
+			continue	; 改行
+		} else {
+			celput 2,a
+		}
+	loop
+	gmode 1
+	return
+
+; ゲームパッドモジュール初期化
+#deffunc pad_ini int p1		; パッド画像の読込IDを指定
+	smart_init
+	smart_add :act_pad=stat :pad_info=0				; 仮想アナログスティックの情報取得用
+	smart_add :act_btn_a=stat :btn_a=0				; ボタンAの情報取得用
+	smart_add :act_btn_b=stat :btn_b=0				; ボタンBの情報取得用
+	smart_add :act_btn_c=stat :btn_c=0				; ボタンCの情報取得用
+	celload "pad.png",p1 :celdiv p1,320,160
+	return
+
+; ゲームパッド入力値取得
+#deffunc pad_tap var p1,int p2		; p1に入力値が返る, p2=パッド画像ID(0にすると非表示)
+	an=p1 :gi=p2
+	if gi>0 :pos 0,320 :celput gi
+	;タップを取得 (タップ開始から400ミリ秒以内に指が離されればタップ終了とみなす)	
+	btn_c=smart_tap(act_btn_c,218,360,266,408,400)
+	btn_a=smart_tap(act_btn_a,218,416,266,464,400)
+	btn_b=smart_tap(act_btn_b,268,388,316,436,400)
+	bt=(btn_a=2)+2*(btn_b=2)+4*(btn_c=2)
+	; 仮想アナログスティック操作
+	smart_analog act_pad,pad_info,73,412,60
+	an=0
+	if pad_info(3)!0 :an=((pad_info(7)+113)\360)/45+1
+	p1=16*bt+an		; 戻り値:方向(1～8),[A]16,[B]32,[C]64
+	return
+
+#global
+
+	randomize
+	pad_ini 1
+	celload "font.png",2 :celdiv 2,8,12
+
+*main
+	repeat
+		redraw 0 :color 0,0,0 :boxf
+
+		pad_tap bt,1
+		if bt!0 :title "Button:"+bt
+
+		redraw 1 :await 1
+	loop
+
