@@ -3,7 +3,7 @@
 MIT license
 https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt
 
-dolphilia版tinyhspから input、mes命令、オプション機能等を削りシェイプアップしたものになります。
+dolphilia版TinyHSPから input、mes命令、オプション機能などを削りシェイプアップしたものです。
 
 https://github.com/dolphilia/tinyhsp
 
