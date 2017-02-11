@@ -5,23 +5,24 @@ old_y = -1
 now_x = 0
 now_y = 0
 
-color :boxf 0,0,639,479
-color 255,0,0
+    color :boxf 0,0,640,480
+    color 255,255,255
+
 repeat
+
+;   1   ã‚«ãƒ¼ã‚½ãƒ«ã‚­ãƒ¼å·¦(â†)
+;   2   ã‚«ãƒ¼ã‚½ãƒ«ã‚­ãƒ¼ä¸Š(â†‘)
+;   4   ã‚«ãƒ¼ã‚½ãƒ«ã‚­ãƒ¼å³(â†’)
+;   8   ã‚«ãƒ¼ã‚½ãƒ«ã‚­ãƒ¼ä¸‹(â†“)
+;  16   ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼
+;  32   Enterã‚­ãƒ¼
+;  64   Ctrlã‚­ãƒ¼
+; 128   ESCã‚­ãƒ¼
+; 256   ãƒžã‚¦ã‚¹ã®å·¦ãƒœã‚¿ãƒ³
+; 512   ãƒžã‚¦ã‚¹ã®å³ãƒœã‚¿ãƒ³
+;1024   TABã‚­ãƒ¼
+
     stick key
-
-;   1   ƒJ[ƒ\ƒ‹ƒL[¶(©)
-;   2   ƒJ[ƒ\ƒ‹ƒL[ã(ª)
-;   4   ƒJ[ƒ\ƒ‹ƒL[‰E(¨)
-;   8   ƒJ[ƒ\ƒ‹ƒL[‰º(«)
-;  16   ƒXƒy[ƒXƒL[
-;  32   EnterƒL[
-;  64   CtrlƒL[
-; 128   ESCƒL[
-; 256   ƒ}ƒEƒX‚Ì¶ƒ{ƒ^ƒ“
-; 512   ƒ}ƒEƒX‚Ì‰Eƒ{ƒ^ƒ“
-;1024   TABƒL[
-
     if key & 256 {
         now_x = mousex
         now_y = mousey
