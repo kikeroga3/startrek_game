@@ -1,32 +1,7 @@
 
-コンパイル(コンソールアプリケーション)
+繧ｳ繝ｳ繝代う繝ｫ(繧ｳ繝ｳ繧ｽ繝ｼ繝ｫ繧｢繝励Μ繧ｱ繝ｼ繧ｷ繝ｧ繝ｳ)
 g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32
 
-コンパイル(Windowsアプリケーション)
+繧ｳ繝ｳ繝代う繝ｫ(Windows繧｢繝励Μ繧ｱ繝ｼ繧ｷ繝ｧ繝ｳ)
 g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
-
-
-
-
-不正な値です。 
-Invalid value.
-
-Invalid argument.
-
-Argument is too much.
-
-Array variable is one dimension only.
-
-：対象が変数ではありません
-:Argument should be a variable.
-
-：対象の変数が配列として指定されています
-:Array variables can not be specified.
-
-assign a value to
-
-
-
-
-
 
