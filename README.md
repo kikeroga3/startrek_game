@@ -52,10 +52,10 @@ abs
 
 [システム変数]
 
-stat
-cnt
-refdval
-refstr
+stat	命令や関数実行後のステータス(整数値)が格納される
+refdval	実数型の戻り値はstatではなくrefdvalに格納される
+refstr	文字列方の戻り値が格納される
+cnt	repeat-loopのカウンタ値
 mousex	マウスのx座標
 mousey	マウスのy座標
 mousel	マウスの左ボタンが押されていれば1、押されていなければ0
