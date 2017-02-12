@@ -54,7 +54,7 @@ abs
 
 stat
 cnt
-refval
+refdval
 refstr
 mousex	マウスのx座標
 mousey	マウスのy座標
