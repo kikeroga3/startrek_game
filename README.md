@@ -79,11 +79,12 @@ tinyhsp
 
 [ソースのコンパイル方法のメモ]
 Windowsでの例ですが、MinGW(gcc)とGLFW3で開発環境をつくって以下コマンドでコンパイルします。
+(dolphiliaさんのページが詳しいです)
 
-(コンソールアプリケーション生成)
+コンソールアプリケーション生成
 g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32
 
-(Windowsアプリケーション生成)
+Windowsアプリケーション生成
 g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
 
 [MIT license]
