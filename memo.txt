@@ -1,7 +1,0 @@
-
-コンパイル(コンソールアプリケーション)
-g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32
-
-コンパイル(Windowsアプリケーション)
-g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
-
