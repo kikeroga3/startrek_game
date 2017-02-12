@@ -1,20 +1,9 @@
 # tinyhsp tiny版
 <pre>
-MIT license
-https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt
-
 dolphilia版TinyHSPから input、mes命令、オプション機能などを削りシェイプアップしたものです。
 使い方や導入方法など、もしこのページで不足のものがあったら下記ページも確認してみてください。
 
 https://github.com/dolphilia/tinyhsp
-
-[コンパイル方法]
-
-(コンソールアプリケーション)
-g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32
-
-(Windowsアプリケーション)
-g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
 
 [命令]
 
@@ -65,4 +54,16 @@ mouser	マウスの右ボタンが押されていれば1、押されていなけ
 命令、関数、システム変数の使い方は本家のHSPとほぼ同じですが、
 全部あわせても40個に満たない、まさにタイニーなプログラム言語となっています。
 こんなんで一体何ができるんでしょう？　マ、色々やってみましょう(ﾟーﾟ)σビシッ
+
+[ソースのコンパイル方法のメモ]
+MinGW(gcc)とGLFW3で開発環境をつくって以下コマンドでコンパイルします。
+
+(コンソールアプリケーション生成)
+g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32
+
+(Windowsアプリケーション生成)
+g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
+
+[MIT license]
+https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt
 </pre>
