@@ -4,6 +4,7 @@ MIT license
 https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt
 
 dolphilia版TinyHSPから input、mes命令、オプション機能などを削りシェイプアップしたものです。
+使い方や導入方法など、もしこのページで不足のものがあったら下記ページも確認してみてください。
 
 https://github.com/dolphilia/tinyhsp
 
@@ -61,6 +62,6 @@ mousey	マウスのy座標
 mousel	マウスの左ボタンが押されていれば1、押されていなければ0
 mouser	マウスの右ボタンが押されていれば1、押されていなければ0
 
-命令、関数、システム変数をあわせて40個に満たない、まさにタイニーなプログラム言語となっています。
+命令、関数、システム変数の使い方は本家のHSPとほぼ同じですが、全部あわせても40個に満たない、まさにタイニーなプログラム言語となっています。
 こんなんで一体何が作れるんでしょう？　マ、色々やってみましょう(ﾟーﾟ)σビシッ
 </pre>
