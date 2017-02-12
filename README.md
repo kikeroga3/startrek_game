@@ -1,9 +1,13 @@
 # tinyhsp tiny版
 <pre>
-dolphilia版TinyHSPから input、mes命令、オプション機能などを削りシェイプアップしたものです。
-使い方や導入方法など、もしこのページで不足のものがあったら下記ページも確認してみてください。
+dolphilia版TinyHSPからCUI用のinput、mes命令、実行時オプションなどを削りシェイプアップしたものです。
+使い方、導入方法、仕様など、もしこのページで不足のものがあったら下記ページも確認してみてください。
 
+TinyHSP
 https://github.com/dolphilia/tinyhsp
+
+neteruhsp
+https://github.com/exrd/neteruhsp
 
 [命令]
 
