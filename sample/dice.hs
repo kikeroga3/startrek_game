@@ -5,7 +5,7 @@
 	repeat
 		stick key
 		if key & 272 :gosub *dice
-		wait 5
+		wait 10
 	loop
 stop
 
@@ -15,7 +15,7 @@ stop
 	r=rnd(6)+1
 	if r=1 {
 		color 255,0,0
-		boxf 320-8,240-8,320+8,240+8
+		boxf 320-16,240-16,320+16,240+16
 	}
 	color
 	if r>1 {
