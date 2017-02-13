@@ -86,6 +86,7 @@ g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32
 
 Windowsアプリケーション生成
 g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
+g++ -static-libgcc -static-libstdc++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
 
 [MIT license]
 https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt
