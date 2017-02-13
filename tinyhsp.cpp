@@ -2,10 +2,11 @@
 // $ clang++ tinyhsp.cpp -o tinyhsp -std=c++11 -lglfw -framework OpenGL
 //
 // For MinGW:
-// $ g++ tinyhsp.c -o tinyhsp -std=c++11 -lglfw3dll -lopengl32
+// $ g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
 // or -std=gnu++11
 // or -std=c++0x
 // or -std=gnu++0x
+// or -std=c++11
 //
 // For Linux:
 // $ g++ tinyhsp.c -o tinyhsp -std=c++11 -lm -ldl -lglfw3 -lGL -lX11 -lXxf86vm -lXrandr -lXinerama -lXcursor -lpthread -lXi
@@ -766,20 +767,20 @@ void
 command_dim(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 2) {
-		raise_error("dim:Array variable is one dimension only.");
+		raise_error("dim: Array variable is one dimension only.");
 	}
 	const auto arg_start = -arg_num;
 	const auto v = stack_peek(s->stack_, arg_start);
 	if (v->type_ != VALUE_VARIABLE) {
-		raise_error("dim:Argument should be a variable.");
+		raise_error("dim: Argument should be a variable.");
 	}
 	if (v->index_ > 0) {
-		raise_error("dim:Array variables can not be specified.");
+		raise_error("dim: Array variables cannot be specified.");
 	}
 	const auto n = stack_peek(s->stack_, arg_start + 1);
 	const auto num = value_calc_int(*n);
 	if (num <= 0) {
-		raise_error("dim:Invalid value.");
+		raise_error("dim: Invalid value.");
 	}
 	prepare_variable(v->variable_, VALUE_INT, 64, num);
 	stack_pop(s->stack_, arg_num);
@@ -789,20 +790,20 @@ void
 command_ddim(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 2) {
-		raise_error("ddim:Array variable is one dimension only.");
+		raise_error("ddim: Array variable is one dimension only.");
 	}
 	const auto arg_start = -arg_num;
 	const auto v = stack_peek(s->stack_, arg_start);
 	if (v->type_ != VALUE_VARIABLE) {
-		raise_error("ddim:Argument should be a variable.");
+		raise_error("ddim: Argument should be a variable.");
 	}
 	if (v->index_ > 0) {
-		raise_error("ddim:Array variables can not be specified.");
+		raise_error("ddim: Array variables cannot be specified.");
 	}
 	const auto n = stack_peek(s->stack_, arg_start + 1);
 	const auto num = value_calc_int(*n);
 	if (num <= 0) {
-		raise_error("ddim:Invalid value.");
+		raise_error("ddim: Invalid value.");
 	}
 	prepare_variable(v->variable_, VALUE_DOUBLE, 64, num);
 	stack_pop(s->stack_, arg_num);
@@ -812,24 +813,21 @@ void
 command_sdim(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 2) {
-		raise_error("sdim:Array variable is one dimension only.");
+		raise_error("sdim: Array variable is one dimension only.");
 	}
 	const auto arg_start = -arg_num;
 	const auto v = stack_peek(s->stack_, arg_start);
 	if (v->type_ != VALUE_VARIABLE) {
-		raise_error("sdim:Argument should be a variable.");
+		raise_error("sdim: Argument should be a variable.");
 	}
 	if (v->index_ > 0) {
-		raise_error("sdim:Array variables can not be specified.");
+		raise_error("sdim: Array variables cannot be specified.");
 	}
 	const auto g = stack_peek(s->stack_, arg_start + 1);
 	const auto granule = value_calc_int(*g);
 	const auto num = (arg_num > 2 ? value_calc_int(*stack_peek(s->stack_, arg_start + 2)) : 1);
-	if (granule <= 0) {
-		raise_error("sdim:Invalid value.");
-	}
-	if (num <= 0) {
-		raise_error("sdim:Invalid value.");
+	if (granule <= 0 || num <= 0) {
+		raise_error("sdim: Invalid value.");
 	}
 	prepare_variable(v->variable_, VALUE_STRING, granule, num);
 	stack_pop(s->stack_, arg_num);
@@ -839,7 +837,7 @@ void
 command_randomize(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num > 1) {
-		raise_error("randomize:Invalid argument.");
+		raise_error("randomize: Invalid argument.");
 	}
 	unsigned int seed = 0;
 	if (arg_num == 0) {
@@ -856,7 +854,7 @@ void
 command_wait(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 1) {
-		raise_error("wait:Invalid argument.");
+		raise_error("wait: Invalid argument.");
 	}
 	double wait_time = 0.0;
 	const auto m = stack_peek(s->stack_);
@@ -879,7 +877,7 @@ void
 command_stop(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num >= 1) {
-		raise_error("stop:Invalid argument.");
+		raise_error("stop: Invalid argument.");
 	}
 	for (;;) { // ウィンドウを閉じるまで
 		if (glfwWindowShouldClose(window)) {
@@ -895,12 +893,12 @@ void
 command_title(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 1) {
-		raise_error("title:Invalid argument.");
+		raise_error("title: Invalid argument.");
 	}
 	const auto m = stack_peek(s->stack_);
 	value_isolate(*m);
 	if (m->type_ != VALUE_STRING) {
-		raise_error("title:Argument should specify a string type.");
+		raise_error("title: Argument should specify a string type.");
 	}
 	glfwSetWindowTitle(window, m->svalue_);
 	stack_pop(s->stack_, arg_num);
@@ -910,7 +908,7 @@ void
 command_pset(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num > 2) {
-		raise_error("pset:Invalid argument.");
+		raise_error("pset: Invalid argument.");
 	}
 	if (arg_num <= 0) { // 引数が省略された
 		set_pixel_rgb(pixel_data,
@@ -939,7 +937,7 @@ void
 command_redraw(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num > 1) {
-		raise_error("redraw:Invalid argument.");
+		raise_error("redraw: Invalid argument.");
 	}
 	if (arg_num <= 0) { // 引数が省略された
 		redraw_flag = true;
@@ -954,7 +952,7 @@ command_redraw(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg
 		redraw_flag = true;
 		redraw();
 	} else {
-		raise_error("redraw:Argument values only 0 or 1.");
+		raise_error("redraw: Argument values only 0 or 1.");
 	}
 	stack_pop(s->stack_, arg_num);
 }
@@ -963,7 +961,7 @@ void
 command_pos(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 2) {
-		raise_error("pos:Invalid argument.");
+		raise_error("pos: Invalid argument.");
 	}
 	const auto arg_start = -arg_num;
 	const auto p1 = stack_peek(s->stack_, arg_start);
@@ -979,7 +977,7 @@ void
 command_color(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num > 3) {
-		raise_error("color:Invalid argument.");
+		raise_error("color: Invalid argument.");
 	}
 	if (arg_num <= 0) { // 引数が省略された場合
 		current_color_r = 0;
@@ -1005,7 +1003,7 @@ void
 command_line(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 4) {
-		raise_error("line:Invalid argument.");
+		raise_error("line: Invalid argument.");
 	}
 	const auto arg_start = -arg_num;
 	const auto p1 = stack_peek(s->stack_, arg_start);
@@ -1031,7 +1029,7 @@ void
 command_boxf(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 4) {
-		raise_error("line:Invalid argument.");
+		raise_error("line: Invalid argument.");
 	}
 	const auto arg_start = -arg_num;
 	const auto p1 = stack_peek(s->stack_, arg_start);
@@ -1056,19 +1054,16 @@ command_boxf(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_n
 void
 command_stick(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
-	if (arg_num < 1) {
-		raise_error("stick:Not enough arguments.");
-	}
-	if (arg_num > 2) {
-		raise_error("stick:Argument is too much.");
+	if (arg_num < 1 || arg_num > 2) {
+		raise_error("stick: Invalid argument.");
 	}
 	const auto arg_start = -arg_num;
 	const auto v = stack_peek(s->stack_, arg_start);
 	if (v->type_ != VALUE_VARIABLE) {
-		raise_error("stick:Argument should be a variable.");
+		raise_error("stick: Argument should be a variable.");
 	}
 	if (v->index_ > 0) {
-		raise_error("stick:Array variables can not be specified.");
+		raise_error("stick: Array variables cannot be specified.");
 	}
 
 	int key = 0;
@@ -1118,7 +1113,7 @@ void
 function_int(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 1) {
-		raise_error("int:Invalid argument.");
+		raise_error("int: Invalid argument.");
 	}
 	const auto m = stack_peek(s->stack_);
 	const auto r = value_calc_int(*m);
@@ -1130,7 +1125,7 @@ void
 function_double(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 1) {
-		raise_error("double:Invalid argument.");
+		raise_error("double: Invalid argument.");
 	}
 	const auto m = stack_peek(s->stack_);
 	const auto r = value_calc_double(*m);
@@ -1142,7 +1137,7 @@ void
 function_str(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 1) {
-		raise_error("str:Invalid argument.");
+		raise_error("str: Invalid argument.");
 	}
 	const auto m = stack_peek(s->stack_);
 	const auto r = value_calc_string(*m);
@@ -1154,12 +1149,12 @@ void
 function_rnd(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 1) {
-		raise_error("rnd:Invalid argument.");
+		raise_error("rnd: Invalid argument.");
 	}
 	const auto m = stack_peek(s->stack_);
 	const auto r = value_calc_int(*m);
 	if (r < 1) {
-		raise_error("rnd:Please specify 1 or more.@@ %d", r);
+		raise_error("rnd: Please specify 1 or more.@@ %d", r);
 	}
 	stack_pop(s->stack_, arg_num);
 	const auto res = rand() % (r);
@@ -1170,7 +1165,7 @@ void
 function_abs(execute_environment_t* NHSP_UNUA(e), execute_status_t* s, int arg_num)
 {
 	if (arg_num != 1) {
-		raise_error("abs:Invalid argument.");
+		raise_error("abs: Invalid argument.");
 	}
 	const auto m = stack_peek(s->stack_);
 	const auto r = value_calc_int(*m);
@@ -1603,7 +1598,7 @@ restart:
 			const auto s = p;
 			while (p[0] != '\"') {
 				if (p[0] == '\0') {
-					raise_error("EOF detected in string.@@ %d line", c.line_);
+					raise_error("EOF detected in string.@@ %d Row", c.line_);
 				}
 				if (p[0] == '\\' && p[1] == '\"') {
 					++p;
@@ -1664,7 +1659,7 @@ restart:
 				}
 			} else {
 				// もう読めない
-				raise_error("Unknown character[%c]@@ %d line", p[0], c.line_);
+				raise_error("Unknown character[%c]@@ %d Row", p[0], c.line_);
 			}
 			break;
 	}
@@ -1876,7 +1871,7 @@ parse_script(parse_context_t& c)
 	{
 		const auto token = read_token(c);
 		if (token->tag_ != TOKEN_EOF) {
-			raise_error("Script could not be parsed successfully.@@ %d line", token->appear_line_);
+			raise_error("Script couldn't be parsed successfully.@@ %d Row", token->appear_line_);
 		}
 	}
 	return res;
@@ -1929,12 +1924,12 @@ parse_statement(parse_context_t& c)
 	// ここまで来て何もないなら、パース不能
 	if (statement == nullptr) {
 		const auto token = read_token(c);
-		raise_error("Statement can not be parsed.@@ %d line", token->appear_line_);
+		raise_error("Statement cannot be parsed.@@ %d Row", token->appear_line_);
 	}
 	// 最後の改行チェック
 	const auto token = read_token(c);
 	if (!is_eos_like_token(token->tag_)) {
-		raise_error("Statement could not be parsed successfully.@@ %d line", token->appear_line_);
+		raise_error("Statement couldn't be parsed successfully.@@ %d Row", token->appear_line_);
 	}
 	return statement;
 }
@@ -1984,7 +1979,7 @@ parse_control_safe(parse_context_t& c)
 		case KEYWORD_GOSUB: {
 			const auto label = parse_label_safe(c);
 			if (label == nullptr) {
-				raise_error("Labels must be specified for goto or gosub.@@ %d line", ident->appear_line_);
+				raise_error("Labels must be specified for goto or gosub.@@ %d Row", ident->appear_line_);
 			}
 			return create_ast_node(keyword == KEYWORD_GOTO ? NODE_GOTO : NODE_GOSUB, label);
 		}
@@ -2025,8 +2020,7 @@ parse_control_safe(parse_context_t& c)
 					}
 					const auto statement = parse_statement(c);
 					if (statement == nullptr) {
-						raise_error("if statement contains statements that cannot be parsed."
-									"@@ %d to %d line", pp->appear_line_, ident->appear_line_);
+						raise_error("if contains statements that cannot be parsed.@@ %d to %d Row", pp->appear_line_, ident->appear_line_);
 					}
 					true_statements =
 						create_ast_node(NODE_BLOCK_STATEMENTS, true_statements, statement);
@@ -2036,7 +2030,7 @@ parse_control_safe(parse_context_t& c)
 				{
 					const auto nn = read_token(c);
 					if (nn->tag_ != TOKEN_EOS) {
-						raise_error("After if conditional, only { or : @@ %d line", nn->appear_line_);
+						raise_error("After if conditional, only { or : @@ %d Row", nn->appear_line_);
 					}
 				}
 				for (;;) {
@@ -2053,8 +2047,7 @@ parse_control_safe(parse_context_t& c)
 					}
 					const auto statement = parse_statement(c);
 					if (statement == nullptr) {
-						raise_error("if statement contains statements that cannot be parsed."
-									"@@ %d to %d line", nn->appear_line_, ident->appear_line_);
+						raise_error("if contains statements that cannot be parsed.@@ %d to %d Row", nn->appear_line_, ident->appear_line_);
 					}
 					true_statements =
 						create_ast_node(NODE_BLOCK_STATEMENTS, true_statements, statement);
@@ -2075,8 +2068,7 @@ parse_control_safe(parse_context_t& c)
 						}
 						const auto statement = parse_statement(c);
 						if (statement == nullptr) {
-							raise_error("else statement contains statements that cannot be parsed."
-										"@@ %d to %d line", nn->appear_line_, ident->appear_line_);
+							raise_error("else contains statements that cannot be parsed.@@ %d to %d Row", nn->appear_line_, ident->appear_line_);
 						}
 						false_statements = create_ast_node(NODE_BLOCK_STATEMENTS, false_statements, statement);
 					}
@@ -2085,8 +2077,7 @@ parse_control_safe(parse_context_t& c)
 					{
 						const auto nnf = read_token(c);
 						if (nnf->tag_ != TOKEN_EOS) {
-							raise_error("After else, only { or : @@ "
-										"%d line", nnf->appear_line_);
+							raise_error("After else, only { or : @@ %d Row", nnf->appear_line_);
 						}
 					}
 					for (;;) {
@@ -2103,8 +2094,7 @@ parse_control_safe(parse_context_t& c)
 						}
 						const auto statement = parse_statement(c);
 						if (statement == nullptr) {
-							raise_error("else statement contains statements that cannot be parsed."
-										"@@ %d to %d line", nnf->appear_line_, ident->appear_line_);
+							raise_error("else contains statements that cannot be parsed.@@ %d to %d Row", nnf->appear_line_, ident->appear_line_);
 						}
 						false_statements = create_ast_node(NODE_BLOCK_STATEMENTS, false_statements, statement);
 					}
@@ -2121,7 +2111,7 @@ parse_control_safe(parse_context_t& c)
 			return create_ast_node(NODE_IF, expr, dispatcher);
 		}
 		case KEYWORD_ELSE:
-			raise_error("Detected an unprocessed else.@@ %d line", ident->appear_line_);
+			raise_error("Detected an unprocessed else.@@ %d Row", ident->appear_line_);
 			break;
 	}
 	unread_token(c);
@@ -2189,7 +2179,7 @@ parse_assign_safe(parse_context_t& c)
 	}
 	const auto next = read_token(c);
 	if (next->tag_ != TOKEN_ASSIGN) {
-		raise_error("Value substitution: = is required.@@ %d line", next->appear_line_);
+		raise_error("Value substitution: = is required.@@ %d Row", next->appear_line_);
 	}
 	auto expr = parse_expression(c);
 	auto assign = create_ast_node(NODE_ASSIGN, variable, expr);
@@ -2214,9 +2204,9 @@ parse_variable_safe(parse_context_t& c)
 	if (nn->tag_ != TOKEN_RPARENTHESIS) {
 		// 多そうなので個別対処
 		if (nn->tag_ == TOKEN_COMMA) {
-			raise_error("Array variable is one dimension only.@@ %d line", nn->appear_line_);
+			raise_error("Array variable is one dimension only.@@ %d Row", nn->appear_line_);
 		}
-		raise_error("Array variable:Parentheses are not closed.@@ %d line", nn->appear_line_);
+		raise_error("Array variable: Parentheses are not closed.@@ %d Row", nn->appear_line_);
 	}
 	return create_ast_node(NODE_VARIABLE, ident, idx);
 }
@@ -2240,7 +2230,7 @@ parse_borand(parse_context_t& c)
 			case TOKEN_OP_BAND: {
 				auto r = parse_eqneq(c);
 				if (r == nullptr) {
-					raise_error("|,& Operator analysis failed.@@ %d line", token->appear_line_);
+					raise_error("|,& Operator analysis failed.@@ %d Row", token->appear_line_);
 				}
 				switch (token->tag_) {
 					case TOKEN_OP_BOR:
@@ -2280,7 +2270,7 @@ parse_eqneq(parse_context_t& c)
 			case TOKEN_ASSIGN: {
 				auto r = parse_gtlt(c);
 				if (r == nullptr) {
-					raise_error("==,!=  Operator analysis failed.@@ %d line", token->appear_line_);
+					raise_error("==,!=  Operator analysis failed.@@ %d Row", token->appear_line_);
 				}
 				switch (token->tag_) {
 					case TOKEN_OP_EQ:
@@ -2322,7 +2312,7 @@ parse_gtlt(parse_context_t& c)
 			case TOKEN_OP_LTOE: {
 				auto r = parse_addsub(c);
 				if (r == nullptr) {
-					raise_error(">,>=,<,<= Operator analysis failed.@@ %d line", token->appear_line_);
+					raise_error(">,>=,<,<= Operator analysis failed.@@ %d Row", token->appear_line_);
 				}
 				switch (token->tag_) {
 					case TOKEN_OP_GT:
@@ -2367,7 +2357,7 @@ parse_addsub(parse_context_t& c)
 			case TOKEN_OP_SUB: {
 				auto r = parse_muldivmod(c);
 				if (r == nullptr) {
-					raise_error("+- Operator analysis failed.@@ %d line", token->appear_line_);
+					raise_error("+- Operator analysis failed.@@ %d Row", token->appear_line_);
 				}
 				switch (token->tag_) {
 					case TOKEN_OP_ADD:
@@ -2407,7 +2397,7 @@ parse_muldivmod(parse_context_t& c)
 			case TOKEN_OP_MOD: {
 				auto r = parse_term(c);
 				if (r == nullptr) {
-					raise_error("*/\\ Operator analysis failed.@@ %d line", token->appear_line_);
+					raise_error("*/\\ Operator analysis failed.@@ %d Row", token->appear_line_);
 				}
 				switch (token->tag_) {
 					case TOKEN_OP_MUL:
@@ -2460,7 +2450,7 @@ parse_primitive(parse_context_t& c)
 			const auto node = parse_expression(c);
 			const auto next = read_token(c);
 			if (next->tag_ != TOKEN_RPARENTHESIS) {
-				raise_error("Parentheses are not closed.@@ %d line", token->appear_line_);
+				raise_error("Parentheses are not closed.@@ %d Row", token->appear_line_);
 			}
 			return create_ast_node(NODE_EXPRESSION, node);
 		}
@@ -2472,23 +2462,23 @@ parse_primitive(parse_context_t& c)
 			unread_token(c);
 			const auto label = parse_label_safe(c);
 			if (label == nullptr) {
-				raise_error("Label can not be parsed.@@ %d line", token->appear_line_);
+				raise_error("Label cannot be parsed.@@ %d Row", token->appear_line_);
 			}
-			raise_error("Labels can not be used for expressions.@@ %d line", token->appear_line_);
+			raise_error("Labels cannot be used for expressions.@@ %d Row", token->appear_line_);
 			return label;
 		}
 		case TOKEN_IDENTIFIER: {
 			unread_token(c);
 			const auto expr = parse_identifier_expression(c);
 			if (expr == nullptr) {
-				raise_error("Function or variable can not be parsed.@@ %d line", token->appear_line_);
+				raise_error("Function or Variable cannot be parsed.@@ %d Row", token->appear_line_);
 			}
 			return expr;
 		}
 		default:
 			break;
 	}
-	raise_error("Primitive values ??can not be acquired.@@ %d line[%s]", token->appear_line_, token->content_);
+	raise_error("Primitive values cannot be acquired.@@ %d Row[%s]", token->appear_line_, token->content_);
 	return nullptr;
 }
 
@@ -2517,7 +2507,7 @@ parse_identifier_expression(parse_context_t& c)
 	const auto idx = parse_arguments(c);
 	const auto nn = read_token(c);
 	if (nn->tag_ != TOKEN_RPARENTHESIS) {
-		raise_error("Function or array variable:Parentheses are not closed.@@ %d line", nn->appear_line_);
+		raise_error("Function or Array variable: Parentheses are not closed.@@ %d Row", nn->appear_line_);
 	}
 	return create_ast_node(NODE_IDENTIFIER_EXPR, ident, idx);
 }
@@ -2633,10 +2623,7 @@ variable_set(list_t* table, const value_t& v, const char* name, int idx)
 		init_required = true;
 	}
 	int len = var->length_;
-	if (idx < 0) {
-		raise_error("Invalid value.@@ %s(%d)", name, idx);
-	}
-	if (len <= idx) {
+	if (idx < 0 || len <= idx) {
 		raise_error("Invalid value.@@ %s(%d)", name, idx);
 	}
 	if (init_required) {
@@ -3713,7 +3700,7 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 			evaluate(e, s, n->right_);
 			const auto var = stack_peek(s->stack_, -2);
 			if (var->type_ != VALUE_VARIABLE) {
-				raise_error("Substitution:Please specify a variable.");
+				raise_error("Substitution: Please specify a variable.");
 			}
 			const auto v = stack_peek(s->stack_, -1);
 			value_isolate(*v);
@@ -3818,7 +3805,7 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 					v->dvalue_ = -v->dvalue_;
 					break;
 				case VALUE_STRING:
-					raise_error("No minus value in the string.[%s]", v->svalue_);
+					raise_error("no minus value in the string.[%s]", v->svalue_);
 					break;
 				default:
 					assert(false);
@@ -3864,7 +3851,7 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 				const auto sysvar = query_sysvar(ident);
 				if (sysvar >= 0) {
 					if (arg_num > 0) {
-						raise_error("Cannot arrays in the system variable", ident);
+						raise_error("cannot arrays in the system variable.", ident);
 					}
 					// 後々のことも考えて、一応
 					stack_pop(s->stack_, arg_num);
@@ -3872,7 +3859,7 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 						case SYSVAR_CNT:
 							if (s->current_loop_frame_ <= 0) {
 								raise_error(
-									"System variable(cnt):Can not refer outside the repeat-loop.");
+									"System variable(cnt): cannot refer outside the repeat-loop.");
 							}
 							stack_push(s->stack_, create_value(s->loop_frame_[s->current_loop_frame_ - 1].cnt_));
 							break;
@@ -3960,7 +3947,7 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 			const auto label_name = label_node->token_->content_;
 			const auto label = search_label(e, label_name);
 			if (label == nullptr) {
-				raise_error("goto:Label not found.@@ %s", label_name);
+				raise_error("goto: Label not found.@@ %s", label_name);
 			}
 			s->node_cur_ = label;
 			break;
@@ -3972,10 +3959,10 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 			const auto label_name = label_node->token_->content_;
 			const auto label = search_label(e, label_name);
 			if (label == nullptr) {
-				raise_error("gosub:Label not found.@@ %s", label_name);
+				raise_error("gosub: Label not found.@@ %s", label_name);
 			}
 			if ((s->current_call_frame_ + 1) >= MAX_CALL_FRAME) {
-				raise_error("gosub:Nesting is too deep.");
+				raise_error("gosub: Nesting is too deep.");
 			}
 			auto& frame = s->call_frame_[s->current_call_frame_];
 			++s->current_call_frame_;
@@ -3985,7 +3972,7 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 		}
 		case NODE_REPEAT: {
 			if (s->current_loop_frame_ + 1 >= MAX_LOOP_FRAME) {
-				raise_error("repeat:Nesting is too deep.");
+				raise_error("repeat: Nesting is too deep.");
 			}
 			auto& frame = s->loop_frame_[s->current_loop_frame_];
 			++s->current_loop_frame_;
@@ -4027,7 +4014,7 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 		case NODE_LOOP:
 		case NODE_CONTINUE: {
 			if (s->current_loop_frame_ <= 0) {
-				raise_error("loop,continue:Is not in repeat-loop.");
+				raise_error("loop,continue: is not in repeat-loop.");
 			}
 			auto& frame = s->loop_frame_[s->current_loop_frame_ - 1];
 			++frame.counter_;
@@ -4037,7 +4024,7 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 		}
 		case NODE_BREAK: {
 			if (s->current_loop_frame_ <= 0) {
-				raise_error("break:Is not in repeat-loop.");
+				raise_error("break: is not in repeat-loop.");
 			}
 			int depth = 0;
 			while (s->node_cur_ != nullptr) {
@@ -4052,8 +4039,7 @@ evaluate(execute_environment_t* e, execute_status_t* s, ast_node_t* n)
 				s->node_cur_ = s->node_cur_->next_;
 			}
 			if (s->node_cur_ == nullptr) {
-				raise_error("break:Could not get out of the repeat-loop."
-								"Could not repeat-loop in goto to break.");
+				raise_error("break: couldn't repeat-loop in goto, and break.");
 			}
 			--s->current_loop_frame_;
 			break;
@@ -4273,7 +4259,6 @@ mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 		current_mouse_down_left = action;
 	} else if (button == 1) { // 右クリック
 		current_mouse_down_right = action;
-	} else {
 	}
 }
 
@@ -4421,4 +4406,3 @@ main(int argc, const char* argv[])
 	destroy_system();
 	return 0;
 }
-
