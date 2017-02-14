@@ -1,4 +1,4 @@
-# tinyhsp tiny版
+# tinyhsp tiny版 ＜草稿＞
 <pre>
 dolphilia版TinyHSPからCUI用のinput、mes命令、実行時オプションなどを削りシェイプアップしたものです。
 使い方、導入方法、仕様など、もしこのページで不足のものがあったら下記ページも確認してみてください。
