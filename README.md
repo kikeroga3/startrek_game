@@ -94,13 +94,15 @@ TinyHSPで「できた！」という成功体験をへて、TinyHSPに限界を
 
 [ソースのコンパイル方法のメモ]
 Windowsでの例ですが、MinGW(gcc)とGLFW3で開発環境をつくって以下コマンドでコンパイルします。
-(dolphiliaさんのページが詳しいです)
 
 コンソールアプリケーション生成
 g++ -static tinyhsp.cpp -o tinyhsp_c -std=gnu++11 -lglfw3dll -lopengl32
 
 Windowsアプリケーション生成
 g++ -static tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
+
+macOSやLinux版の実行ファイルも作れるはずです。
+各環境用のコンパイル方法についてはdolphiliaさんのページ(https://github.com/dolphilia/tinyhsp)が詳しいです。
 
 [MIT license]
 https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt
