@@ -60,7 +60,8 @@ mouser	  マウスの右ボタンが押されていれば1、押されていな�
 こんなんで一体何ができるんでしょう？　マ、色々やってみましょう(ﾟーﾟ)σビシッ
 
 [インストール方法]
-どこでもいいので tinyhsp.exe と glfw3.dll, libgcc_s_dw2-1.dll を同じフォルダに置いてください。
+任意のフォルダでいいので tinyhsp.exe と glfw3.dll を同じフォルダに置いてください。
+(実行時に libgcc_s_dw2-1.dll がないとか言われたら、こちらも置いてみてください)
 
 [実行方法]
 スクリプトファイル(例：start.hs)を tinyhsp.exe にドラッグ＆ドロップするか、
@@ -77,16 +78,19 @@ tinyhsp
 
 と入力するだけでもスクリプト「start.hs」の内容が実行されます。
 
+補足：
+tinyhsp_c.exe はコマンドプロンプトのCUI画面が同時に開き、エラーがあればそこに表示されるようになってます。
+デバッグ用EXEとお考えください。
+
 [ソースのコンパイル方法のメモ]
 Windowsでの例ですが、MinGW(gcc)とGLFW3で開発環境をつくって以下コマンドでコンパイルします。
 (dolphiliaさんのページが詳しいです)
 
 コンソールアプリケーション生成
-g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32
+g++ -static tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32
 
 Windowsアプリケーション生成
-g++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
-g++ -static-libgcc -static-libstdc++ tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
+g++ -static tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
 
 [MIT license]
 https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt
