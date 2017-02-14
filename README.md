@@ -86,8 +86,8 @@ tinyhsp_c.exe はコンソールから実行するデバッグ用EXEです。エ
 ビギナーは命令や機能がたくさんあると気持ちが飽和してかえって迷うものです。
 「この位なら出来るかも…」と感じる動機づけからスタートし、慣れてくれば今度は、
 少ない命令だからこその「工夫して目的を果たす」という頭の使い方や、
-「ないと作れない」じゃなくて「なければ作る！」という逞しい発想をもてるようになる。
-そんな教育効果が見込めると思います。
+「ないと作れない」じゃなくて「なければ作る！」という発想をもてるようになる。
+そんな逞しい学習効果が見込めると思います。
 TinyHSPで「できた！」という成功体験をへて、TinyHSPに限界を感じてから次のプログラム言語へステップアップする。
 プログラミングのファーストステップとして楽しみ、活用してもらえればと思います。
 …決して機能が少ないことへのいいわけではありませんよー(^^;
@@ -101,9 +101,11 @@ g++ -static tinyhsp.cpp -o tinyhsp_c -std=gnu++11 -lglfw3dll -lopengl32
 Windowsアプリケーション生成
 g++ -static tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
 
-macOSやLinux版の実行ファイルも作れるはずです。
+macOSやLinux版の実行ファイルも作れるはずですが、私はまだどちらもコンパイルまで試せてません。
 各環境用のコンパイル方法については<a href="https://github.com/dolphilia/tinyhsp">dolphiliaさんのページ</a>が詳しいです。
+もしmacOS版やLinux版の実行ファイルを作成された方がおりましたらぜひお知らせください。
+こちらのページに掲載させていただきたいと思っています。
 
 [MIT license]
-https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt
+https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt0
 </pre>
