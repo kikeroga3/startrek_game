@@ -11,7 +11,7 @@ x=320 :y=240
 	color 0,255,255
 	boxf x-3,y-2,x+3,y+2
 	color 255,255,0
-	if key & 16 :boxf
+	if key & 16 :boxf x-1,y+13,x+1,y+23+rnd(10) :line x,y+13,x+rnd(20)-10,y+13+rnd(10)
 	if key & 1 :boxf
 	if key & 4 :boxf
 
