@@ -1,67 +1,111 @@
-# startrek_game
+# tinyhsp tiny版 ＜草稿＞
+<pre>
+dolphilia版TinyHSPからCUI用のinput、mes命令、実行時オプションなどを削りシェイプアップしたものです。
+使い方、導入方法、仕様など、もしこのページで不足のものがあったら下記ページも確認してみてください。
 
-TinyBASICのオリジナル版スタートレック<br>
-STARTREK.BAS<br>
-STARTREK.TXT<br>
+TinyHSP
+https://github.com/dolphilia/tinyhsp
 
-上記を多少読みやすく編集したテキスト(実行不可)<br>
-STARTREK.BAS_Clarity.txt<br>
+neteruhsp
+https://github.com/exrd/neteruhsp
 
-まずは移植し易いhsp3cl版を作る予定。<br>
-STARTREK_hsp3cl　・・・移植中テキスト(basic→hsp命令の置き換えをする)<br>
-startrek.hsp　・・・動作確認用ソース(実行しながらデバッグする)<br>
-startrek.exe　・・・実行ファイル(Windows用)<br>
-<br>
-★TinyBasicとHSPの違いで注意するところ<br>
-----------------------------------------<br>
-①変数<br>
-TinyBasicで使える変数はA～Z、配列変数は@(200)のみ。<br>
-<br>
-HSPでは変数、配列変数とも半角英字で任意の名称を付けられる。<br>
-----------------------------------------<br>
-②input命令<br>
-<br>
-TinyBasic<br>
-　例)INPUT "文字" A<br>
-<br>
-※数値でなく英字を入力すると、その英字の変数値が代入される。<br>
-　例) Y=999;INPUT "(Y/N)?"A　…　ここでYと入力すると変数AにはYの内容である999が入る。<br>
-<br>
-HSPCLではinput命令で文字表示できない。<br>
-　例)input a,2,2<br>
-----------------------------------------<br>
-③マルチステートメントの区切り<br>
-<br>
-TinyBasicは";"　…　セミコロン<br>
-<br>
-HSPは":"　…　コロン<br>
-----------------------------------------<br>
-④goto, gosub命令<br>
-<br>
-TinyBasicの飛び先は行番号(変数可)。<br>
-<br>
-HSPはラベル。<br>
-----------------------------------------<br>
-⑤print命令<br>
-<br>
-TinyBasic<br>
-　例)PRINT "文字",A,#3,B　…　変数Bの値は3桁で表示<br>
-<br>
-HSPCLでは書式指定できない。<br>
-　例)mes "文字"+a<br>
-<br>
-またTinyBasicでは下記のように末尾にカンマを付けると改行しないが<br>
-<br>
-　PRINT "文字",<br>
-<br>
-HSPでは上記のようなことはできない。<br>
-----------------------------------------<br>
-⑥rnd命令<br>
-<br>
-TinyBasicでは発生値は1～32767らしい。<br>
-　例)RND(8)だと1～8<br>
-<br>
-HSPでは発生値は0～2147483647と、0から始まる。<br>
-　例)rnd(8)だと0～7になる。<br>
-----------------------------------------<br>
+[命令]
 
+wait
+stop
+title
+pset
+line
+boxf
+redraw
+pos
+color
+stick
+end
+return
+goto
+gosub
+repeat
+loop
+continue
+break
+if
+else
+dim
+ddim
+sdim
+randomize
+
+[関数]
+
+int
+double
+str
+rnd
+abs
+
+[システム変数]
+
+stat      命令や関数実行後のステータス(整数値)が格納される
+refdval	  実数型の戻り値はstatではなくrefdvalに格納される
+refstr	  文字列方の戻り値が格納される
+cnt	      repeat-loopのカウンタ値
+mousex	  マウスのx座標
+mousey	  マウスのy座標
+mousel	  マウスの左ボタンが押されていれば1、押されていなければ0
+mouser	  マウスの右ボタンが押されていれば1、押されていなければ0
+
+命令、関数、システム変数の所作は本家のHSPとほぼ同じですが、全部あわせても40個に満たない、
+まさにタイニーなプログラム言語となっています。
+こんなんで一体何ができるんでしょう？　マ、いろいろとやってみましょう(ﾟーﾟ)σビシッ
+
+[インストール方法]
+任意のフォルダでよいので tinyhsp.exe と glfw3.dll を同じフォルダに置いてください。
+(実行時に libgcc_s_dw2-1.dll がないとか言われたら、こちらも置いてみてください)
+
+[実行方法]
+スクリプトファイル(例：start.hs)を tinyhsp.exe にドラッグ＆ドロップするか、
+拡張子「.hs」を tinyhsp.exe に関連付けしてスクリプトファイルをダブルクリックします。
+
+あるいはコマンドラインから次のように入力しても実行できます。
+
+tinyhsp start.hs
+
+また「start.hs」というファイル名はデフォルトスクリプトファイル名なので
+tinyhsp.exe と同じフォルダにあれば、単に
+
+tinyhsp
+
+と入力するだけでもスクリプト「start.hs」の内容が実行されます。
+
+補足：
+tinyhsp_c.exe はコンソールから実行するデバッグ用EXEです。エラーがあればコンソールに表示されるようになってます。
+
+[教育用言語としての適性について]
+「命令がいっぱいあってわかんなーい！」じゃなくて「これしかない」から始められるのが唯一最大のメリットです。
+ビギナーは命令や機能がたくさんあると気持ちが飽和してかえって迷うものです。
+「この位なら出来るかも…」と感じる動機づけからスタートし、慣れてくれば今度は、
+少ない命令数だからこその「工夫して目的を果たす」という頭の使い方や、
+「ないと作れない」じゃなくて「なければ作る！」という発想をもてるようになる。
+そんな逞しい学習効果が見込めると思います。
+TinyHSPで「できた！」という成功体験をへて、TinyHSPに限界を感じてから次のプログラム言語へステップアップする。
+プログラミングのファーストステップとして楽しみ、活用してもらえればと思います。
+…決して機能が少ないことへのいいわけではありませんよー(^^;
+
+[ソースのコンパイル方法のメモ]
+Windowsでの例ですが、MinGW(gcc)とGLFW3で開発環境をつくって以下コマンドでコンパイルします。
+
+コンソールアプリケーション生成
+g++ -static tinyhsp.cpp -o tinyhsp_c -std=gnu++11 -lglfw3dll -lopengl32
+
+Windowsアプリケーション生成
+g++ -static tinyhsp.cpp -o tinyhsp -std=gnu++11 -lglfw3dll -lopengl32 -mwindows
+
+macOSやLinux版の実行ファイルも作れるはずですが、私はまだどちらもコンパイルまで試せてません。
+各環境用のコンパイル方法については<a href="https://github.com/dolphilia/tinyhsp">dolphiliaさんのページ</a>が詳しいです。
+もしmacOS版やLinux版の実行ファイルを作成された方がおりましたらぜひお知らせください。
+こちらのページに掲載させていただきたいと思っています。
+
+[MIT license]
+https://github.com/YukinobuKurata/YouTubeMagicBuyButton/blob/master/MIT-LICENSE.txt0
+</pre>
